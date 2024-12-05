@@ -10,8 +10,8 @@ const config = require("../config");
 const { validatePassword, uploadToS3FromBuffer } = require("../utils");
 const { BREVO_TEMPLATES } = require("../utils");
 
-const brevo = require("../brevo");
-const { capture } = require("../sentry");
+const brevo = require("../services/brevo");
+const { capture } = require("../services/sentry");
 
 const SERVER_ERROR = "SERVER_ERROR";
 const USER_ALREADY_REGISTERED = "USER_ALREADY_REGISTERED";
@@ -63,13 +63,18 @@ router.post("/signin", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const { password, email, name,  } = req.body;
+    const { password, email, name } = req.body;
 
-    if (password && !validatePassword(password)) return res.status(400).send({ ok: false, user: null, code: PASSWORD_NOT_VALIDATED });
+    if (password && !validatePassword(password))
+      return res.status(400).send({ ok: false, user: null, code: PASSWORD_NOT_VALIDATED });
 
     const user = await UserObject.create({ name, password, email });
     const token = jwt.sign({ _id: user._id }, config.secret, { expiresIn: JWT_MAX_AGE });
-    const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: false };
+    const opts = {
+      maxAge: COOKIE_MAX_AGE,
+      secure: config.ENVIRONMENT === "development" ? false : true,
+      httpOnly: false,
+    };
     res.cookie("jwt", token, opts);
 
     return res.status(200).send({ user, token, ok: true });
@@ -221,7 +226,8 @@ router.post("/search", passport.authenticate(["admin", "user"], { session: false
 
 router.post("/", passport.authenticate(["admin"], { session: false }), async (req, res) => {
   try {
-    if (!validatePassword(req.body.password)) return res.status(400).send({ ok: false, user: null, code: PASSWORD_NOT_VALIDATED });
+    if (!validatePassword(req.body.password))
+      return res.status(400).send({ ok: false, user: null, code: PASSWORD_NOT_VALIDATED });
 
     const user = await UserObject.create(req.body);
 
