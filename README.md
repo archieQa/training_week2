@@ -41,7 +41,6 @@
    npm run dev
    ```
 
-
 ---
 
 ### APP Installation
@@ -68,5 +67,6 @@
    npm run dev
    ```
 
+---
 
 Write with ❤️ by Léopold
