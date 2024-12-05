@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { MONGODB_ENDPOINT } = require("./config.js");
+const { MONGODB_ENDPOINT } = require("../config.js");
 
 console.log("Connecting to mongoDB...");
 mongoose

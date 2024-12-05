@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-const { BREVO_KEY, ENVIRONMENT } = require("./config");
+const { BREVO_KEY, ENVIRONMENT } = require("../config");
 
 const SENDER_NAME = "Your Name";
 const SENDER_NAME_SMS = "Your Name";

@@ -26,7 +26,7 @@ function handleError(err, req, res, next) {
   res.status(statusCode).json(output);
 }
 
-require("./mongo");
+require("./services/mongo");
 
 app.use(cors({ credentials: true, origin: [APP_URL, "your production url because sometimes theres a cors issue"] }));
 app.use(cookieParser());
@@ -48,9 +48,8 @@ app.use("/user", require("./controllers/user"));
 app.use("/file", require("./controllers/file"));
 app.use("/dummy", require("./controllers/dummy_controller"));
 
-
 app.use(handleError);
-require("./passport")();
+require("./services/passport")();
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
