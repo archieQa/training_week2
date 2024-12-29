@@ -96,7 +96,7 @@ router.post("/logout", async (req, res) => {
   }
 });
 
-router.get("/signin_token", passport.authenticate("user", { session: false }), async (req, res) => {
+router.get("/signin_token", passport.authenticate(["user", "admin"], { session: false }), async (req, res) => {
   try {
     const { user } = req;
     user.set({ last_login_at: Date.now() });

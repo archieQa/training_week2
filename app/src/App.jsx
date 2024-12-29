@@ -51,16 +51,20 @@ const AuthLayout = () => {
 
 const UserLayout = () => {
   const [loading, setLoading] = useState(true)
-
   const { user, setUser } = useStore()
 
   async function fetchUser() {
     try {
-      const res = await api.get('/user/signin_token')
-      if (res.token) api.setToken(res.token)
-      setUser(res.user)
+      const { ok, token, user } = await api.get('/user/signin_token')
+      if (!ok) {
+        setUser(null)
+        return
+      }
+      api.setToken(token)
+      setUser(user)
     } catch (e) {
       console.log(e)
+      setUser(null)
     } finally {
       setLoading(false)
     }
@@ -72,10 +76,7 @@ const UserLayout = () => {
 
   if (loading) return <Loader />
 
-  if (!user) {
-    setUser(null)
-    return <Navigate to='/auth' replace={true} />
-  }
+  if (!user) return <Navigate to='/auth' replace={true} />
 
   return (
     <div className='flex flex-col h-screen overflow-hidden lg:flex-row'>
