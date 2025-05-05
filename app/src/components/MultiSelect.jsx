@@ -4,8 +4,6 @@ import { HiChevronDown, HiChevronUp } from "react-icons/hi2"
 import { HiMagnifyingGlass } from "react-icons/hi2"
 import { useTranslation } from "i18next"
 
-import { cn } from "@/utils"
-
 function MultiSelect({ id, options, values, onSelectedChange, placeholder = "Select an option" }) {
   const { t } = useTranslation("components")
   const [selectedOptions, setSelectedOptions] = useState([])
@@ -93,7 +91,7 @@ function MultiSelect({ id, options, values, onSelectedChange, placeholder = "Sel
                 return (
                   <li key={option.value} onClick={() => handleOptionClick(option)} className="flex items-center gap-1 hover:bg-gray-100 text-sm px-2 py-1 cursor-pointer w-96">
                     {isSelected ? <MdCheckBox className="text-blue-500" /> : <MdCheckBoxOutlineBlank className="text-gray-500" />}
-                    <span className={cn("flex-1", isSelected ? "font-semibold" : "font-normal")}>{option.label}</span>
+                    <span className={`flex-1 ${isSelected ? "font-semibold" : "font-normal"}`}>{option.label}</span>
                   </li>
                 )
               })}

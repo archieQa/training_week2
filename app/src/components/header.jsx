@@ -5,7 +5,6 @@ import { RxAvatar } from "react-icons/rx"
 
 import api from "@/services/api"
 import useStore from "@/services/store"
-import { cn } from "@/utils"
 
 const Header = ({}) => {
   const { user, setUser } = useStore()
@@ -42,14 +41,14 @@ const Header = ({}) => {
             <Menu.Items className="absolute shadow-lg right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-sidebar ring-1 ring-gray-900/5 focus:outline-none">
               <Menu.Item>
                 {({ active }) => (
-                  <Link to="/account" className={cn("block px-3 py-1 text-sm leading-6 text-gray-900", active ? "bg-gray-50" : "", "hover:bg-gray-50")}>
+                  <Link to="/account" className={`block px-3 py-1 text-sm leading-6 text-gray-900 ${active ? "bg-gray-50" : ""} hover:bg-gray-50`}>
                     My account
                   </Link>
                 )}
               </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
-                  <button onClick={handleLogout} className={cn("block px-3 py-1 text-sm leading-6 text-gray-900", active ? "bg-gray-50" : "", "hover:bg-gray-50")}>
+                  <button onClick={handleLogout} className={`block px-3 py-1 text-sm leading-6 text-gray-900 ${active ? "bg-gray-50" : ""} hover:bg-gray-50`}>
                     Sign out
                   </button>
                 )}

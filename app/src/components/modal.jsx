@@ -2,8 +2,6 @@ import React, { Fragment, useRef } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import { HiX } from "react-icons/hi"
 
-import { cn } from "@/utils"
-
 export default function Modal({ isOpen, children, onClose, className = "w-[calc(100%_-_60px)]" }) {
   const cancelButtonRef = useRef()
 
@@ -40,10 +38,7 @@ export default function Modal({ isOpen, children, onClose, className = "w-[calc(
             leaveTo="opacity-0 scale-95"
           >
             <div
-              className={cn(
-                "w-full z-10 bg-white rounded-3xl shadow-md absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 max-h-screen overflow-y-auto",
-                className
-              )}
+              className={`w-full z-10 bg-white rounded-3xl shadow-md absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 max-h-screen overflow-y-auto ${className}`}
             >
               {onClose && (
                 <div className="absolute cursor-pointer top-5 right-5">
