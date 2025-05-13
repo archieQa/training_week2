@@ -19,5 +19,18 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
   },
-  rules: {},
+  rules: {
+    "no-unused-vars": "off",
+    "no-console": "off",
+    "no-debugger": "off",
+    "no-var": "off",
+    "prefer-const": "off",
+    semi: "off",
+    quotes: "off",
+    indent: "off",
+    "comma-dangle": "off",
+    "arrow-parens": "off",
+    "no-multiple-empty-lines": "off",
+    "no-prototype-builtins": "off",
+  },
 };
