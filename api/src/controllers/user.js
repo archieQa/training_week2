@@ -78,6 +78,22 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+// Check if email exists
+router.post("/check-email", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ ok: false, code: "EMAIL_REQUIRED" });
+
+    const user = await UserObject.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(200).json({ ok: true, exists: false });
+
+    res.status(200).json({ ok: true, exists: true });
+  } catch (error) {
+    capture(error);
+    res.status(500).json({ ok: false, code: ERROR_CODES.SERVER_ERROR });
+  }
+});
+
 router.post("/logout", async (_, res) => {
   try {
     res.clearCookie("jwt", cookieOptions());
