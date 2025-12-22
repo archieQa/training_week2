@@ -221,7 +221,7 @@ router.post("/search", passport.authenticate("admin", { session: false }), async
     const data = await UserObject.find(query)
       .skip(offset)
       .limit(limit)
-      .sort(sort || { createdAt: -1 });
+      .sort(sort || { created_at: -1 });
 
     const total = await UserObject.countDocuments(query);
 

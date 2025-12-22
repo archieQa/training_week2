@@ -63,7 +63,7 @@ router.post("/search", passport.authenticate("user", { session: false, failWithE
     }
 
     const total = await DummyObject.countDocuments(query);
-    const data = await DummyObject.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const data = await DummyObject.find(query).sort({ created_at: -1 }).skip(skip).limit(limit);
 
     return res.status(200).send({ ok: true, data, total });
   } catch (error) {

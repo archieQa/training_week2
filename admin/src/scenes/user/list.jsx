@@ -95,7 +95,7 @@ export default function UserList() {
                           </span>
                         </td>
                         <td className="p-3 text-xs lg:text-sm text-gray-700">{user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : "Never"}</td>
-                        <td className="p-3 text-xs lg:text-sm text-gray-700">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}</td>
+                        <td className="p-3 text-xs lg:text-sm text-gray-700">{user.created_at ? new Date(user.created_at).toLocaleDateString() : "—"}</td>
                       </tr>
                     ))
                   )}

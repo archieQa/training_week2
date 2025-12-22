@@ -123,7 +123,7 @@ function Information({ user, setUser }) {
 
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-700 mb-2">Created At</label>
-          <input className="w-full bg-gray-100" value={values.createdAt ? new Date(values.createdAt).toLocaleString() : "—"} disabled />
+          <input className="w-full bg-gray-100" value={values.created_at ? new Date(values.created_at).toLocaleString() : "—"} disabled />
         </div>
       </div>
 
