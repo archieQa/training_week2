@@ -1,7 +1,7 @@
 import React, { Fragment } from "react"
 import { useNavigate } from "react-router-dom"
 import { Menu, Transition } from "@headlessui/react"
-import { TbLogout } from "react-icons/tb"
+import { TbLogout, TbUser } from "react-icons/tb"
 
 import useStore from "@/services/store"
 import api from "@/services/api"
@@ -31,8 +31,7 @@ const ProfileMenu = () => {
           <img className="h-10 w-10 rounded-full border border-secondary object-contain" src={user.avatar} alt="" />
         ) : (
           <span className="h-10 w-10 rounded-full border border-secondary bg-white flex items-center justify-center uppercase font-bold text-gray-800 text-sm">
-            {user.first_name[0]}
-            {user.last_name[0]}
+            {user.name?.[0] || "U"}
           </span>
         )}
       </Menu.Button>
@@ -46,7 +45,18 @@ const ProfileMenu = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute top-10 right-0 mt-2 rounded-b-md bg-white border p-2 z-10">
+        <Menu.Items className="absolute top-10 right-0 mt-2 rounded-md bg-white border shadow-lg p-2 z-10 space-y-1">
+          <Menu.Item>
+            {({ active }) => (
+              <button
+                className={`w-44 flex items-center justify-between rounded-md px-4 py-2 text-sm ${active ? "bg-gray-100 text-gray-900" : "text-gray-700"}`}
+                onClick={() => navigate("/account")}
+              >
+                Profil
+                <TbUser className="ml-2 h-5 w-5" aria-hidden="true" />
+              </button>
+            )}
+          </Menu.Item>
           <Menu.Item>
             {({ active }) => (
               <button className={`text-white w-44 flex items-center justify-between rounded-md px-4 py-2 text-sm ${active ? "bg-gray-600" : "bg-primary"}`} onClick={handleLogout}>

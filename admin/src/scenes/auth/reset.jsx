@@ -16,7 +16,7 @@ export default ({ location }) => {
     setBtnLoading(true);
     try {
       const { token } = queryString.parse(location.search);
-      const { ok, data } = await api.post("/admin/user/forgot_password_reset", {
+      const { ok, data } = await api.post("/admin/forgot_password_reset", {
         ...values,
         token,
       });

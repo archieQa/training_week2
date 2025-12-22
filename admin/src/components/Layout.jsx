@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
-import { FaBars, FaUser, FaStackExchange } from "react-icons/fa6";
+import { FaBars, FaUser, FaStackExchange, FaShieldHalved } from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
 import { PiSignOutBold } from "react-icons/pi";
 import { toast } from "react-hot-toast";
@@ -22,7 +22,7 @@ export default function Layout({ children }) {
 
   const handleLogout = async () => {
     try {
-      const {ok} = await api.post(`/admin/user/logout`);
+      const { ok } = await api.post(`/admin/logout`);
       if (!ok) throw new Error("Something went wrong");
 
       setUser(null);
@@ -77,8 +77,7 @@ export default function Layout({ children }) {
                   </Transition.Child>
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto p-4 bg-white">
                     <div className="flex shrink-0 flex-col items-center mx-auto gap-1 font-semibold font-mono mt-5 text-xl">
-                      Talent R
-                      <p className="text-gray-700 font-medium text-xs">Admin Platform</p>
+                      Talent R<p className="text-gray-700 font-medium text-xs">Admin Platform</p>
                     </div>
                     <nav className="flex flex-1 flex-col mt-5">
                       <ul role="list" className="flex flex-1 flex-col gap-y-2">
@@ -107,6 +106,18 @@ export default function Layout({ children }) {
                           <FaUser className={classNames("h-4 w-4 shrink-0")} />
                           Users
                         </NavLink>
+                        <NavLink
+                          to="/admin"
+                          className={({ isActive }) =>
+                            classNames(
+                              isActive ? "bg-black bg-opacity-10 !text-black font-medium" : "",
+                              "group flex items-center gap-x-2 rounded-md py-3 px-4 text-[#6E7581] text-xs font-semibold transition-colors"
+                            )
+                          }
+                        >
+                          <FaShieldHalved className={classNames("h-4 w-4 shrink-0")} />
+                          Admins
+                        </NavLink>
                       </ul>
                     </nav>
                   </div>
@@ -119,8 +130,7 @@ export default function Layout({ children }) {
         <div className="hidden z-50 lg:fixed lg:inset-y-0 lg:flex lg:w-48 lg:flex-col shadow-sidebar">
           <div className="flex grow flex-col overflow-y-auto bg-white p-4 border-r border-[#E8E8E8]">
             <div className="flex shrink-0 flex-col items-center mx-auto gap-1 font-semibold font-mono text-xl">
-              Talent R
-              <p className="text-gray-700 font-medium text-xs">Admin Platform</p>
+              Talent R<p className="text-gray-700 font-medium text-xs">Admin Platform</p>
             </div>
             <nav className="flex flex-1 flex-col mt-10">
               <ul role="list" className="flex flex-1 flex-col gap-y-2">
@@ -148,6 +158,18 @@ export default function Layout({ children }) {
                 >
                   <FaUser className={classNames("h-4 w-4 shrink-0")} />
                   Users
+                </NavLink>
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    classNames(
+                      isActive ? "bg-black bg-opacity-10 !text-black font-medium" : "",
+                      "group flex items-center gap-x-2 rounded-md py-3 px-4 text-[#6E7581] text-xs font-semibold transition-colors"
+                    )
+                  }
+                >
+                  <FaShieldHalved className={classNames("h-4 w-4 shrink-0")} />
+                  Admins
                 </NavLink>
               </ul>
             </nav>

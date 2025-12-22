@@ -4,6 +4,7 @@ const PORT = process.env.PORT || 8080;
 const MONGODB_ENDPOINT = process.env.MONGODB_ENDPOINT;
 const SECRET = process.env.SECRET || "not-so-secret";
 const APP_URL = process.env.APP_URL || "http://localhost:3000";
+const ADMIN_URL = process.env.ADMIN_URL || "http://localhost:3001";
 const SENTRY_DSN = process.env.SENTRY_DSN || "";
 
 const S3_ENDPOINT = process.env.S3_ENDPOINT || "";
@@ -18,6 +19,7 @@ const CONFIG = {
   MONGODB_ENDPOINT,
   SECRET,
   APP_URL,
+  ADMIN_URL,
   SENTRY_DSN,
   S3_ENDPOINT,
   S3_ACCESSKEYID,

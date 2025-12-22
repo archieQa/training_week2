@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import * as Sentry from "@sentry/browser";
 
@@ -10,6 +10,7 @@ import Auth from "./scenes/auth";
 import Account from "./scenes/account";
 import Dasboard from "./scenes/dasboard";
 import User from "./scenes/user";
+import Admin from "./scenes/admin";
 
 import api from "./services/api";
 import useStore from "./store";
@@ -31,15 +32,15 @@ export default function App() {
         <Route element={<UserLayout />}>
           <Route path="/" element={<Dasboard />} />
           <Route path="/user/*" element={<User />} />
+          <Route path="/admin/*" element={<Admin />} />
           <Route path="/account" element={<Account />} />
         </Route>
-        <Route path='*' element={<Navigate to='/' />} />
-
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Toaster position="top-center" />
     </BrowserRouter>
   );
-};
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -51,18 +52,18 @@ function ScrollToTop() {
 }
 
 const AuthLayout = () => {
-  const { user } = useStore()
-  if (user) return <Navigate to='/' replace={true} />
+  const { user } = useStore();
+  if (user) return <Navigate to="/" replace={true} />;
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <Outlet />
     </div>
-  )
-}
+  );
+};
 
 const UserLayout = () => {
   const [loading, setLoading] = useState(true);
-  const { user, setUser } = useStore()
+  const { user, setUser } = useStore();
 
   useEffect(() => {
     fetchData();
@@ -70,36 +71,34 @@ const UserLayout = () => {
 
   async function fetchData() {
     try {
-      const  { ok, token, user } = await api.get("/admin/user/signin_token");
+      const { ok, token, user } = await api.get("/admin/signin_token");
       if (!ok) {
-        setUser(null)
-        return
+        setUser(null);
+        return;
       }
-      api.setToken(token)
-      setUser(user)
+      api.setToken(token);
+      setUser(user);
     } catch (e) {
-      console.log(e)
-      setUser(null)
+      console.log(e);
+      setUser(null);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   if (loading) return <Loader />;
 
-  if (!user) return <Navigate to='/auth' replace={true} />
+  if (!user) return <Navigate to="/auth" replace={true} />;
 
   return (
-    <main className='flex flex-col min-h-dvh overflow-hidden bg-gray-50'>
+    <main className="flex flex-col min-h-dvh overflow-hidden bg-gray-50">
       <Layout /> {/* Barre de navigation en haut */}
-      <div className='flex flex-1 h-full'>
-        <div className='w-48'>{/* Espace pour la barre latérale */}</div>
-        <section className='flex-1 p-4'>
+      <div className="flex flex-1 h-full">
+        <div className="w-48">{/* Espace pour la barre latérale */}</div>
+        <section className="flex-1 p-4">
           <Outlet />
         </section>
       </div>
     </main>
-  )
-}
-
-
+  );
+};

@@ -13,7 +13,7 @@ export default function UserTagSelector({ value = [], onChange, disabled = false
   useEffect(() => {
     async function fetchUsers() {
       if (search) {
-        const { data, ok } = await api.post("/user/search", { search });
+        const { data, ok } = await api.post("/admin/search", { search });
         if (ok) {
           setUsers(data);
         }

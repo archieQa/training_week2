@@ -15,7 +15,7 @@ export default () => {
     setBtnLoading(true);
     try {
       if (!validator.isEmail(email)) toast.error("Invalid email address");
-      const { ok, data } = await api.post("/admin/user/forgot_password", { email });
+      const { ok, data } = await api.post("/admin/forgot_password", { email });
       if (!ok) toast.error(data.message);
       toast.success("Sent");
       setDone(true);

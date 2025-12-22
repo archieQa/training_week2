@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react"
 import toast from "react-hot-toast"
 import validator from "validator"
 import { useSearchParams, useNavigate, Link } from "react-router-dom"
-import { FiMail, FiEye, FiEyeOff, FiLock, FiUser, FiBriefcase } from "react-icons/fi"
+import { FiMail, FiEye, FiEyeOff, FiLock, FiUser } from "react-icons/fi"
 // import { useGoogleLogin } from "@react-oauth/google";
 
 import Loader from "../../components/loader"
 
 import api from "../../services/api"
 import store from "@/services/store"
-import { useTranslation } from "react-i18next"
 
 export default function Signin() {
   const [email, setEmail] = useState("")
@@ -176,7 +175,7 @@ const EmailCheck = ({ setEmail, setUserExists }) => {
         <div>
           <label className="text-base text-gray-700 flex items-center mb-2">
             <FiMail className="mr-2 text-blue-400" size={20} />
-            Work email <span className="text-blue-400 ml-1">*</span>
+            Email <span className="text-blue-400 ml-1">*</span>
           </label>
           <input
             id="email-input"
@@ -363,7 +362,7 @@ const EmailCheckAgency = ({ setEmail, setUserExists }) => {
         <div>
           <label className="text-base text-gray-700 flex items-center mb-2">
             <FiMail className="mr-2 text-blue-400" size={20} />
-            Work email <span className="text-blue-400 ml-1">*</span>
+            Email <span className="text-blue-400 ml-1">*</span>
           </label>
           <input
             id="email-input"
@@ -417,8 +416,6 @@ const SignIn = ({ email, setForgotPassword }) => {
   const [error, setError] = useState("")
   const [seePassword, setSeePassword] = useState(false)
 
-  const { i18n } = useTranslation()
-
   const { setUser } = store()
 
   const navigate = useNavigate()
@@ -434,7 +431,6 @@ const SignIn = ({ email, setForgotPassword }) => {
       const { user, token } = await api.post(`/user/signin`, { email, password })
       if (token) api.setToken(token)
       if (user) setUser(user)
-      i18n.changeLanguage(user.language)
 
       if (typeof window !== "undefined" && window.onSigninSuccess) window.onSigninSuccess("email")
 
@@ -611,13 +607,10 @@ const ForgotPassword = ({ setForgotPassword, email }) => {
 // Sign Up Component
 const SignUp = ({ email }) => {
   const [loading, setLoading] = useState(false)
-  const [values, setValues] = useState({ email, password: "", firstname: "", lastname: "", organization_name: "" })
-  const [errors, setErrors] = useState({ password: "", firstname: "", lastname: "", organization_name: "" })
+  const [values, setValues] = useState({ email, password: "", name: "" })
+  const [errors, setErrors] = useState({ password: "", name: "" })
   const [seePassword, setSeePassword] = useState(false)
-  const [isApproved, setIsApproved] = useState(true)
   const navigate = useNavigate()
-
-  const { i18n } = useTranslation()
 
   const { setUser } = store()
 
@@ -630,47 +623,23 @@ const SignUp = ({ email }) => {
   const handleSubmit = async e => {
     try {
       e.preventDefault()
-      if (!values.organization_name) return setErrors({ ...errors, organization_name: "Organization name is required" })
-      if (!values.firstname) return setErrors({ ...errors, firstname: "First name is required" })
-      if (!values.lastname) return setErrors({ ...errors, lastname: "Last name is required" })
+      if (!values.name) return setErrors({ ...errors, name: "Name is required" })
       if (!values.password) return setErrors({ ...errors, password: "Password is required" })
       setLoading(true)
 
-      values.role_recruiter = true
-      values.approved = false
-
       const { user, token } = await api.post("/user/signup", values)
-
-      if (!user.approved) return setIsApproved(false)
 
       if (token) api.setToken(token)
       if (user) setUser(user)
-      i18n.changeLanguage(user.language)
 
       navigate("/")
-      toast.success("Account created successfully! Your account is pending approval.")
+      toast.success("Account created successfully!")
     } catch (e) {
       console.error(e)
       toast.error(e.code)
     }
     setLoading(false)
   }
-
-  if (!isApproved)
-    return (
-      <div className="py-8 w-full">
-        <div className="mb-8 flex justify-center">
-          <span className="text-xl font-extrabold text-gray-900">Boilerplate</span>
-        </div>
-        <div className="text-center space-y-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Account request submitted</h1>
-          <p className="text-gray-600 text-base">Your account request has been submitted. You will receive an email when your account is approved.</p>
-          <a href="https://boilerplate.co" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-500 underline">
-            Explore Boilerplate
-          </a>
-        </div>
-      </div>
-    )
 
   return (
     <form className="w-full" onSubmit={handleSubmit}>
@@ -689,52 +658,24 @@ const SignUp = ({ email }) => {
         <div>
           <label className="text-sm text-gray-700 flex items-center mb-1">
             <FiMail className="mr-2 text-blue-400" size={18} />
-            Work email
+            Email
           </label>
           <input className="w-full px-3 py-2 rounded-lg bg-gray-100 border border-gray-300 text-gray-600 text-sm" name="email" type="email" value={email} disabled />
         </div>
         <div>
           <label className="text-sm text-gray-700 flex items-center mb-1">
-            <FiBriefcase className="mr-2 text-blue-400" size={18} />
-            Organization Name <span className="text-blue-400 ml-1">*</span>
+            <FiUser className="mr-2 text-blue-400" size={18} />
+            Name <span className="text-blue-400 ml-1">*</span>
           </label>
           <input
             className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all text-gray-900 text-sm"
-            name="organization_name"
+            name="name"
             type="text"
-            value={values.organization_name}
+            value={values.name}
             onChange={handleChange}
-            placeholder="Enter your organization name"
+            placeholder="Enter your name"
           />
-          {errors.organization_name && <p className="text-xs text-red-400 mt-1">{errors.organization_name}</p>}
-        </div>
-        <div>
-          <label className="text-sm text-gray-700 flex items-center mb-1">
-            <FiUser className="mr-2 text-blue-400" size={18} />
-            Full Name <span className="text-blue-400 ml-1">*</span>
-          </label>
-          <div className="flex items-center gap-2 w-full">
-            <input
-              className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all text-gray-900 text-sm"
-              name="firstname"
-              type="text"
-              value={values.firstname}
-              onChange={handleChange}
-              placeholder="Enter your first name"
-            />
-            <input
-              className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all text-gray-900 text-sm"
-              name="lastname"
-              type="text"
-              value={values.lastname}
-              onChange={handleChange}
-              placeholder="Enter your surname"
-            />
-          </div>
-          <div className="flex flex-col">
-            {errors.firstname && <p className="text-xs text-red-400 mt-1">{errors.firstname}</p>}
-            {errors.lastname && <p className="text-xs text-red-400 mt-1">{errors.lastname}</p>}
-          </div>
+          {errors.name && <p className="text-xs text-red-400 mt-1">{errors.name}</p>}
         </div>
         <div>
           <label className="text-sm text-gray-700 flex items-center mb-1">

@@ -2,47 +2,60 @@ const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const { SECRET } = require("../config");
-const Sentry = require("@sentry/node");
-const User = require("../models/user");
+const { capture } = require("./sentry");
 
-function getToken(req) {
+// load up
+const User = require("../models/user");
+const Admin = require("../models/admin");
+
+function getUserToken(req) {
   let token = ExtractJwt.fromAuthHeaderWithScheme("JWT")(req);
-  if (!token) token = req.cookies.jwt;
+  if (!token) token = req.cookies.jwt_user;
+  return token;
+}
+
+function getAdminToken(req) {
+  let token = ExtractJwt.fromAuthHeaderWithScheme("JWT")(req);
+  if (!token) token = req.cookies.jwt_admin;
   return token;
 }
 
 module.exports = function (app) {
-  const opts = {};
-  opts.jwtFromRequest = getToken;
-  opts.secretOrKey = SECRET;
+  const userOpts = {};
+  userOpts.jwtFromRequest = getUserToken;
+  userOpts.secretOrKey = SECRET;
+
+  const adminOpts = {};
+  adminOpts.jwtFromRequest = getAdminToken;
+  adminOpts.secretOrKey = SECRET;
 
   passport.use(
     "user",
-    new JwtStrategy(opts, async function (jwtPayload, done) {
+    new JwtStrategy(userOpts, async function (jwtPayload, done) {
       try {
         const user = await User.findOne({ _id: jwtPayload._id });
-        if (!user) return done(null, false);
-        if (user.role !== "user") return done(null, false);
-        Sentry.setUser({ id: user._id.toString(), username: user.first_name + user.last_name, email: user.email });
-        return done(null, user);
+        if (user) {
+          return done(null, user);
+        }
       } catch (error) {
-        return done(error, false);
+        capture(error);
       }
+      return done(null, false);
     }),
   );
 
   passport.use(
     "admin",
-    new JwtStrategy(opts, async function (jwtPayload, done) {
+    new JwtStrategy(adminOpts, async function (jwtPayload, done) {
       try {
-        const user = await User.findOne({ _id: jwtPayload._id });
-        if (!user) return done(null, false);
-        if (user.role !== "admin") return done(null, false);
-        Sentry.setUser({ id: user._id.toString(), username: user.first_name + user.last_name, email: user.email });
-        return done(null, user);
+        const admin = await Admin.findOne({ _id: jwtPayload._id });
+        if (admin) {
+          return done(null, admin);
+        }
       } catch (error) {
-        return done(error, false);
+        capture(error);
       }
+      return done(null, false);
     }),
   );
 

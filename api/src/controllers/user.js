@@ -20,13 +20,13 @@ const JWT_MAX_AGE = "1y";
 
 const cookieOptions = () => {
   if (config.ENVIRONMENT === "development") {
-    return { maxAge: COOKIE_MAX_AGE, httpOnly: true, secure: false, sameSite: "Lax" };
+    return { maxAge: COOKIE_MAX_AGE, httpOnly: true, secure: false, domain: "localhost", sameSite: "Lax" };
   } else {
     return {
       maxAge: COOKIE_MAX_AGE,
       httpOnly: true,
       secure: true,
-      origin: "YOUR PROD URL",
+      origin: config.APP_URL,
       sameSite: "none",
     };
   }
@@ -49,7 +49,7 @@ router.post("/signin", async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ _id: user.id }, config.SECRET, { expiresIn: JWT_MAX_AGE });
-    res.cookie("jwt", token, cookieOptions());
+    res.cookie("jwt_user", token, cookieOptions());
 
     return res.status(200).send({ ok: true, token, user });
   } catch (error) {
@@ -67,7 +67,7 @@ router.post("/signup", async (req, res) => {
 
     const user = await UserObject.create({ name, password, email });
     const token = jwt.sign({ _id: user._id }, config.SECRET, { expiresIn: JWT_MAX_AGE });
-    res.cookie("jwt", token, cookieOptions());
+    res.cookie("jwt_user", token, cookieOptions());
 
     return res.status(200).send({ user, token, ok: true });
   } catch (error) {
@@ -96,7 +96,7 @@ router.post("/check-email", async (req, res) => {
 
 router.post("/logout", async (_, res) => {
   try {
-    res.clearCookie("jwt", cookieOptions());
+    res.clearCookie("jwt_user", cookieOptions());
     return res.status(200).send({ ok: true });
   } catch (error) {
     capture(error);
@@ -104,14 +104,14 @@ router.post("/logout", async (_, res) => {
   }
 });
 
-router.get("/signin_token", passport.authenticate(["user", "admin"], { session: false }), async (req, res) => {
+router.get("/signin_token", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
     const { user } = req;
     user.set({ last_login_at: Date.now() });
     await user.save();
 
     const token = jwt.sign({ _id: user._id }, config.SECRET, { expiresIn: JWT_MAX_AGE });
-    res.cookie("jwt", token, cookieOptions());
+    res.cookie("jwt_user", token, cookieOptions());
 
     return res.status(200).send({ user, token, ok: true });
   } catch (error) {
@@ -188,27 +188,21 @@ router.post("/reset_password", passport.authenticate("user", { session: false })
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.put("/", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
-    const data = await UserObject.findOne({ _id: req.params.id });
-    return res.status(200).send({ ok: true, data });
+    const obj = req.body;
+    const data = await UserObject.findByIdAndUpdate(req.user._id, obj, { new: true });
+    res.status(200).send({ ok: true, data });
   } catch (error) {
     capture(error);
     res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
   }
 });
 
-router.get("/", passport.authenticate(["admin", "user"], { session: false }), async (req, res) => {
-  try {
-    const data = await UserObject.find({ role: "normal" });
-    return res.status(200).send({ ok: true, data });
-  } catch (error) {
-    capture(error);
-    res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
-  }
-});
+// ============ ADMIN ROUTES FOR USER MANAGEMENT ============
 
-router.post("/search", passport.authenticate(["admin", "user"], { session: false }), async (req, res) => {
+// Search users (admin only)
+router.post("/search", passport.authenticate("admin", { session: false }), async (req, res) => {
   try {
     const { search, sort, per_page, page } = req.body;
     let query = {};
@@ -221,46 +215,42 @@ router.post("/search", passport.authenticate(["admin", "user"], { session: false
       };
     }
 
-    const no_of_docs_each_page = per_page || 200;
-    const current_page_number = page - 1 || 0;
+    const limit = per_page || 10;
+    const offset = page ? (page - 1) * limit : 0;
 
-    const users = await UserObject.find(query)
-      .skip(no_of_docs_each_page * current_page_number)
-      .limit(no_of_docs_each_page)
-      .sort(sort);
+    const data = await UserObject.find(query)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort || { created_at: -1 });
 
     const total = await UserObject.countDocuments(query);
 
-    return res.status(200).send({ ok: true, data: { users, total } });
+    return res.status(200).send({ ok: true, data, total });
   } catch (error) {
     capture(error);
     res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
   }
 });
 
-router.post("/", passport.authenticate(["admin"], { session: false }), async (req, res) => {
+// Get user by ID (admin only)
+router.get("/:id", passport.authenticate("admin", { session: false }), async (req, res) => {
   try {
-    const { password } = req.body;
-
-    if (!validatePassword(password))
-      return res.status(400).send({ ok: false, user: null, code: ERROR_CODES.PASSWORD_NOT_VALIDATED });
-
-    const user = await UserObject.create(req.body);
-
-    return res.status(200).send({ data: user, ok: true });
+    const data = await UserObject.findOne({ _id: req.params.id });
+    if (!data) return res.status(404).send({ ok: false, code: ERROR_CODES.NOT_FOUND });
+    return res.status(200).send({ ok: true, data });
   } catch (error) {
-    if (error.code === 11000) return res.status(409).send({ ok: false, code: ERROR_CODES.USER_ALREADY_REGISTERED });
     capture(error);
-    return res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
+    res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
   }
 });
 
-//@check
-router.put("/:id", passport.authenticate(["admin", "user"], { session: false }), async (req, res) => {
+// Update user by ID (admin only)
+router.put("/:id", passport.authenticate("admin", { session: false }), async (req, res) => {
   try {
     const user = await UserObject.findById(req.params.id);
-    const obj = req.body;
+    if (!user) return res.status(404).send({ ok: false, code: ERROR_CODES.NOT_FOUND });
 
+    const obj = req.body;
     user.set(obj);
     await user.save();
 
@@ -271,17 +261,7 @@ router.put("/:id", passport.authenticate(["admin", "user"], { session: false }),
   }
 });
 
-router.put("/", passport.authenticate(["admin", "user", "applicant"], { session: false }), async (req, res) => {
-  try {
-    const obj = req.body;
-    const data = await UserObject.findByIdAndUpdate(req.user._id, obj, { new: true });
-    res.status(200).send({ ok: true, data });
-  } catch (error) {
-    capture(error);
-    res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
-  }
-});
-
+// Delete user by ID (admin only)
 router.delete("/:id", passport.authenticate("admin", { session: false }), async (req, res) => {
   try {
     await UserObject.findOneAndRemove({ _id: req.params.id });

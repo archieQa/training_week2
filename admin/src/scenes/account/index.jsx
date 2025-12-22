@@ -1,14 +1,14 @@
-/* eslint-disable react/display-name */
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-import Loader from "../components/Loader";
-import LoadingButton from "../components/LoadingButton";
-import Modal from "../components/Modal";
+import Loader from "../../components/Loader";
+import LoadingButton from "../../components/LoadingButton";
+import Modal from "../../components/Modal";
+import FileInput from "../../components/FileInput";
 
-import api from "../services/api";
-import useStore from "../store";
+import api from "../../services/api";
+import useStore from "../../store";
 
 export default () => {
   const { user, setUser } = useStore();
@@ -18,7 +18,7 @@ export default () => {
   const handleSubmit = async () => {
     setBtnLoading(true);
     try {
-      const {ok, data} = await api.put(`/user`, values);
+      const { ok, data } = await api.put(`/admin`, values);
       if (!ok) return toast.error(data.message);
       setUser(data);
       toast.success("Profile Updated successfully!");
@@ -36,8 +36,13 @@ export default () => {
       <div className="space-y-4">
         <div className="border-b p-3 text-lg font-medium">Your Account</div>
         <div className="px-3 flex flex-col gap-5">
+          <div className="flex flex-col gap-y-2">
+            <label htmlFor="avatar">Avatar</label>
+            <FileInput value={values.avatar} name="avatar" folder="avatars" onChange={(e) => setValues({ ...values, avatar: e.target.value })} />
+          </div>
+
           <div className="flex justify-between gap-5">
-            <div className="flex flex-col gap-y-2  w-1/2">
+            <div className="flex flex-col gap-y-2 w-1/2">
               <label htmlFor="name">Name</label>
               <input
                 type="text"
@@ -85,7 +90,7 @@ const ResetPassword = () => {
   const resetpasswordHandle = async () => {
     setBtnLoading(true);
     try {
-      const { ok, data } = await api.post("/user/reset_password", values);
+      const { ok, data } = await api.post("/admin/reset_password", values);
       if (!ok) return toast.error(data.message);
       setOpen(false);
       toast.success("Password updated successfully!");

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
@@ -9,10 +9,12 @@ import api from "../../services/api";
 import LoadingButton from "../../components/LoadingButton";
 
 export default () => {
+  const navigate = useNavigate();
   const { user, setUser } = useStore();
   const [seePassword, setSeePassword] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
   const [values, setValues] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -21,14 +23,17 @@ export default () => {
     e.preventDefault();
     setBtnLoading(true);
     try {
-      const { ok, data, user, token } = await api.post(`/admin/signin`, values);
-      if (!ok) toast.error(data.message);
+      const { ok, data, user, token } = await api.post(`/admin/signup`, values);
+      if (!ok) return toast.error(data?.message || "Error");
 
       if (token) api.setToken(token);
       if (user) setUser(user);
-      setBtnLoading(false);
+      toast.success("Account created successfully!");
+      navigate("/");
     } catch (e) {
       console.log("e", e);
+      toast.error(e.code || "Error");
+    } finally {
       setBtnLoading(false);
     }
   };
@@ -37,12 +42,16 @@ export default () => {
 
   return (
     <div className="relative pb-10">
-      <div className="p-4 px-20 pt-10 mx-auto mb-10 font-mono text-2xl font-bold text-center">Talent R</div>
+      <div className="p-4 px-20 pt-10 mx-auto mb-10 font-mono text-2xl font-bold text-center">Admin</div>
 
       <div className="flex items-center justify-center flex-col w-[90vw] md:w-[500px] mx-auto">
-        <h1 className="mb-12 text-3xl font-semibold text-center text-black">Se connecter</h1>
+        <h1 className="mb-12 text-3xl font-semibold text-center text-black">Create Admin Account</h1>
 
         <form className="w-full space-y-4" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-y-2">
+            <label htmlFor="name">Name</label>
+            <input type="text" name="name" value={values.name} onChange={(e) => setValues({ ...values, name: e.target.value })} className="w-full" placeholder="Enter your name" />
+          </div>
           <div className="flex flex-col gap-y-2">
             <label htmlFor="email">Email</label>
             <input
@@ -51,16 +60,11 @@ export default () => {
               value={values.email}
               onChange={(e) => setValues({ ...values, email: e.target.value })}
               className="w-full"
-              placeholder="Entrez votre adresse e-mail"
+              placeholder="Enter your email"
             />
           </div>
           <div className="flex flex-col gap-y-2">
-            <div className="flex items-center justify-between">
-              <label htmlFor="password">Mot de passe</label>
-              <Link className="leading-6 text-app" to="/auth/forgot">
-                Mot de passe oublié ?
-              </Link>
-            </div>
+            <label htmlFor="password">Password</label>
             <div className="relative">
               <input
                 type={seePassword ? "text" : "password"}
@@ -68,6 +72,7 @@ export default () => {
                 value={values.password}
                 onChange={(e) => setValues({ ...values, password: e.target.value })}
                 className="w-full"
+                placeholder="Enter your password (min 6 characters)"
               />
               <div className="absolute -translate-y-1/2 top-1/2 right-4">
                 {seePassword ? (
@@ -86,7 +91,7 @@ export default () => {
             type="submit"
             onClick={handleSubmit}
           >
-            Se connecter
+            Create Account
           </LoadingButton>
         </form>
       </div>
