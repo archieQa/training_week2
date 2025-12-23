@@ -29,6 +29,7 @@ The project is composed of 3 applications:
 ## 🎯 Features
 
 ### Core Features
+
 - **Event Management**: Create, update, and delete events
 - **User Authentication**: JWT-based auth with login/register/password reset
 - **Event Discovery**: Search and filter events by category, city, and date
@@ -36,6 +37,7 @@ The project is composed of 3 applications:
 - **Admin Dashboard**: Manage all events and users
 
 ### Upcoming Features (Week 2-3)
+
 - **Email Notifications**: Ticket confirmations via Brevo
 - **Payment Integration**: Stripe for paid events
 - **QR Code Check-in**: Event check-in system
@@ -54,7 +56,6 @@ The project is composed of 3 applications:
    ```
 
 2. Create your database on Clever Cloud
-
    - Create a MongoDB add-on
    - Retrieve the MongoDB connection URI from the add-on information
 
@@ -140,6 +141,7 @@ The project is composed of 3 applications:
 ## 🗂️ Data Models
 
 ### Event
+
 - Core event information (title, description, dates, venue, location)
 - Capacity management and available spots tracking
 - Pricing and currency
@@ -149,6 +151,7 @@ The project is composed of 3 applications:
 - Registration settings (deadline, requires approval)
 
 ### Attendee
+
 - Event registration tracking
 - User information (name, email)
 - Registration status (pending, confirmed, cancelled, checked_in)
@@ -157,12 +160,14 @@ The project is composed of 3 applications:
 - Check-in timestamp
 
 ### User
+
 - Authentication (email, password with bcrypt hashing)
 - Profile (name, avatar)
 - Role (user, client)
 - Password reset tokens
 
 ### Admin
+
 - Separate admin authentication
 - Full management capabilities
 
@@ -171,6 +176,7 @@ The project is composed of 3 applications:
 ## 📡 API Routes
 
 ### Events
+
 - `POST /event/search` - Search published events (public)
 - `GET /event/:id` - Get event details (public)
 - `POST /event` - Create event (authenticated)
@@ -182,6 +188,7 @@ The project is composed of 3 applications:
 - `DELETE /event/admin/:id` - Delete any event (admin)
 
 ### Attendees
+
 - `POST /attendee/register` - Register for event (authenticated)
 - `GET /attendee/my-registrations` - Get user's registrations (authenticated)
 - `DELETE /attendee/:id` - Cancel registration (user)
@@ -190,6 +197,7 @@ The project is composed of 3 applications:
 - `POST /attendee/admin/search` - Search all attendees (admin)
 
 ### Users
+
 - `POST /user/signin` - User login
 - `POST /user/signup` - User registration
 - `POST /user/logout` - User logout
@@ -204,12 +212,14 @@ The project is composed of 3 applications:
 - `DELETE /user/:id` - Delete user (admin)
 
 ### Admins
+
 - `POST /admin/signin` - Admin login
 - `POST /admin/signup` - Create admin account
 - `POST /admin/logout` - Admin logout
 - Similar routes to users for admin management
 
 ### Files
+
 - `POST /file/upload` - Upload file (authenticated)
 
 ---
@@ -293,6 +303,7 @@ git push origin feature/venue-module
 ### PR Best Practices
 
 **✅ DO:**
+
 - **One PR per feature** - Each feature (Venue module, Google Calendar service, Cleanup script, etc.) should be a separate PR
 - **Full-stack & working** - Your PR should include both backend (model + controller) and frontend (pages + API integration), fully functional
 - **Small but complete** - Each PR should be focused on ONE feature, but that feature should work end-to-end
@@ -301,6 +312,7 @@ git push origin feature/venue-module
 - **Test before submitting** - Make sure your feature works locally before creating the PR
 
 **❌ DON'T:**
+
 - Don't submit giant PRs with multiple features
 - Don't submit incomplete features (backend without frontend)
 - Don't submit PRs with broken code or linter errors
@@ -338,6 +350,7 @@ Each of these should be a **separate PR**:
 ### PR Title Format
 
 Use clear, descriptive titles:
+
 - ✅ `feat: add venue module with full CRUD and frontend`
 - ✅ `feat: integrate google calendar export service`
 - ✅ `feat: add stripe webhook for payment updates`
@@ -359,9 +372,11 @@ Use clear, descriptive titles:
 This project is designed for a 3-week training program on full-stack development.
 
 ### Week 1: Building the Events Module
+
 **Branch**: `week1-starter` (coming soon)
 
 Trainees will build the core Events functionality from scratch:
+
 - Event model (schema definition)
 - Event controller (CRUD operations)
 - Event routes (REST API)
@@ -369,7 +384,8 @@ Trainees will build the core Events functionality from scratch:
 - Authentication and authorization
 - Frontend pages for event listing and creation
 
-**Skills Learned**: 
+**Skills Learned**:
+
 - MongoDB models and schemas
 - Express routing and controllers
 - Authentication with Passport.js
@@ -377,9 +393,11 @@ Trainees will build the core Events functionality from scratch:
 - React components and state management
 
 ### Week 2: Event Registration & Attendees
+
 **Branch**: `week2-starter` (coming soon)
 
 Trainees will implement the registration system:
+
 - Attendee model and relationships
 - Registration logic (capacity management, validation)
 - Email notifications (Brevo integration)
@@ -387,6 +405,7 @@ Trainees will implement the registration system:
 - Organizer dashboard for attendee management
 
 **Skills Learned**:
+
 - Database relationships (refs and populate)
 - Email services integration
 - Complex business logic
@@ -394,9 +413,11 @@ Trainees will implement the registration system:
 - Admin/organizer permissions
 
 ### Week 3: Advanced Features
+
 **Branch**: `week3-starter` (coming soon)
 
 Trainees will add advanced features:
+
 - Payment integration (Stripe)
 - QR code generation and check-in system
 - Waitlist management
@@ -405,6 +426,7 @@ Trainees will add advanced features:
 - Advanced filtering and search
 
 **Skills Learned**:
+
 - Third-party API integration (Stripe)
 - File generation (QR codes, PDFs)
 - Data visualization
@@ -412,7 +434,9 @@ Trainees will add advanced features:
 - Performance optimization
 
 ### Main Branch
+
 Contains the complete, production-ready codebase with all features implemented. This serves as:
+
 - Reference implementation
 - Solution for trainees
 - Starting point for customization

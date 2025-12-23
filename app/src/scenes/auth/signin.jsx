@@ -48,7 +48,9 @@ export default function Signin() {
                   <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">2.</span>
                   <div>
                     <p className="text-sm text-gray-900 font-medium">Check if email exists</p>
-                    <p className="text-xs text-gray-500 mt-1">Backend: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">POST /user/check-email</code></p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Backend: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">POST /user/check-email</code>
+                    </p>
                   </div>
                 </div>
 
@@ -86,9 +88,7 @@ export default function Signin() {
             <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
               <div className="mb-6">
                 <h3 className="text-base font-semibold text-gray-900 mb-2">📚 Learning Point: Frictionless Signup</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  Minimize form fields and remove unnecessary friction to increase conversion rates.
-                </p>
+                <p className="text-sm text-gray-600 leading-relaxed">Minimize form fields and remove unnecessary friction to increase conversion rates.</p>
               </div>
 
               <div className="space-y-3">
@@ -142,9 +142,7 @@ export default function Signin() {
             <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
               <div className="mb-6">
                 <h3 className="text-base font-semibold text-gray-900 mb-2">📚 Welcome Back!</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  We found your account. Just enter your password to continue.
-                </p>
+                <p className="text-sm text-gray-600 leading-relaxed">We found your account. Just enter your password to continue.</p>
               </div>
 
               <div className="space-y-3">
@@ -172,9 +170,7 @@ export default function Signin() {
             <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
               <div className="mb-6">
                 <h3 className="text-base font-semibold text-gray-900 mb-2">📚 Password Reset Flow</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  Simple and secure password recovery via email.
-                </p>
+                <p className="text-sm text-gray-600 leading-relaxed">Simple and secure password recovery via email.</p>
               </div>
 
               <div className="space-y-3">
@@ -182,7 +178,9 @@ export default function Signin() {
                   <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">1.</span>
                   <div>
                     <p className="text-sm text-gray-900 font-medium">Send reset email</p>
-                    <p className="text-xs text-gray-500 mt-1">Backend: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">POST /user/forgot_password</code></p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Backend: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">POST /user/forgot_password</code>
+                    </p>
                   </div>
                 </div>
 
@@ -285,12 +283,7 @@ const EmailCheck = ({ setEmail, setUserExists }) => {
           {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
         </div>
 
-        <button
-          id="email-submit"
-          className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50"
-          type="submit"
-          disabled={loading}
-        >
+        <button id="email-submit" className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50" type="submit" disabled={loading}>
           {loading ? <Loader size="small" color="white" /> : "Continue"}
         </button>
       </form>
@@ -617,10 +610,7 @@ const ForgotPassword = ({ setForgotPassword, email }) => {
           <h1 className="text-2xl font-medium text-gray-900 mb-2">Check your email</h1>
           <p className="text-sm text-gray-600">We've sent a password reset link to your email.</p>
         </div>
-        <button
-          onClick={() => setForgotPassword(false)}
-          className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800"
-        >
+        <button onClick={() => setForgotPassword(false)} className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800">
           Back to Sign In
         </button>
       </div>
@@ -652,11 +642,7 @@ const ForgotPassword = ({ setForgotPassword, email }) => {
         <button className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800" type="submit">
           {loading ? <Loader size="small" color="white" /> : "Send Reset Link"}
         </button>
-        <button
-          type="button"
-          onClick={() => setForgotPassword(false)}
-          className="w-full py-2 rounded text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200"
-        >
+        <button type="button" onClick={() => setForgotPassword(false)} className="w-full py-2 rounded text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200">
           Back to Sign In
         </button>
       </div>
