@@ -213,7 +213,7 @@ function EventCard({ event }) {
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">Available spots</span>
                 <span className="text-xs font-semibold text-gray-900">
-                  {event.available_spots} / {event.capacity}
+                  {event.capacity - event.available_spots} / {event.capacity}
                 </span>
               </div>
               <div className="mt-1 w-full bg-gray-200 rounded-full h-2">

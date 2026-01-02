@@ -46,7 +46,7 @@ export default function EventView() {
 
   if (!event) return null
 
-  const isOrganizer = user && event.organizer_id === user._id
+  const isOrganizer = user && event.organizer_id === user.id
 
   return (
     <div className="p-8">

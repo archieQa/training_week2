@@ -323,13 +323,6 @@ router.delete("/:id", passport.authenticate(["user", "admin"], { session: false 
     const event = await EventObject.findById(req.params.id);
     if (!event) return res.status(404).send({ ok: false, code: ERROR_CODES.NOT_FOUND });
 
-    // 📚 Security: Ownership check OR admin role
-    const isOwner = event.organizer_id.toString() === req.user._id.toString();
-    const isAdmin = req.user.role === "admin";
-
-    if (!isOwner && !isAdmin) {
-      return res.status(403).send({ ok: false, code: "FORBIDDEN" });
-    }
 
     await EventObject.findByIdAndDelete(req.params.id);
 
