@@ -15,9 +15,7 @@ export default function Dashboard() {
           <p className="text-sm text-gray-600 mt-1">Learn how to collaborate effectively and ship small, focused PRs in a team environment</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded font-medium">
-            ✅ Week 1 Complete
-          </div>
+          <div className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded font-medium">✅ Week 1 Complete</div>
         </div>
       </div>
 
@@ -33,7 +31,7 @@ export default function Dashboard() {
                   <h2 className="text-xl font-bold text-gray-900">MONDAY: Kickoff with your manager</h2>
                   <span className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded font-medium">9am-1pm</span>
                 </div>
-                
+
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
                     <h4 className="font-semibold text-purple-900 mb-2 text-sm">Collaboration Patterns</h4>
@@ -133,72 +131,108 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-4">
-              {/* BUG FIXES (30min-1hr each) */}
+              {/* BUG FIXES */}
               <div>
                 <h4 className="text-sm font-semibold text-red-700 mb-2">🐛 Bugs to Fix</h4>
                 <div className="grid md:grid-cols-2 gap-2">
-                  <TicketCard number="201" type="bug" title="Event creation crashes with empty venue" duration="30min" complexity="Easy" />
-                  <TicketCard number="202" type="bug" title="Past events show in public search" duration="45min" complexity="Easy" />
-                  <TicketCard number="203" type="bug" title="Can delete other user's events (security!)" duration="1hr" complexity="Medium" />
-                  <TicketCard number="204" type="bug" title="Search filters don't reset properly" duration="30min" complexity="Easy" />
-                  <TicketCard number="205" type="bug" title="Event edit page shows wrong organizer" duration="45min" complexity="Easy" />
-                  <TicketCard number="206" type="bug" title="Pagination breaks on last page" duration="1hr" complexity="Medium" />
-                  <TicketCard number="207" type="bug" title="Email validation accepts invalid formats" duration="30min" complexity="Easy" />
-                  <TicketCard number="208" type="bug" title="Console errors on event detail page" duration="45min" complexity="Easy" />
+                  <TicketCard
+                    number="B01"
+                    type="bug"
+                    title="Event Page: The 'Edit' button never shows up, even when I'm the organizer of the event"
+                    duration="45min"
+                    complexity="Medium"
+                  />
+                  <TicketCard
+                    number="B02"
+                    type="bug"
+                    title="Events Search: When I type in the search box or change category, I have to click 'Search' - it should update automatically"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B03"
+                    type="bug"
+                    title="Event Page: All tabs look the same - I can't tell which one is currently selected"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B04"
+                    type="bug"
+                    title="Create Event Modal: When I close the modal without submitting, then reopen it, my previous text is still there"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B05"
+                    type="bug"
+                    title="Event Card: The progress bar shows the wrong percentage - text says '30/100 filled' but bar shows 70% full"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B06"
+                    type="bug"
+                    title="Edit Event: I can set the end date to be before the start date and it saves without any error"
+                    duration="45min"
+                    complexity="Medium"
+                  />
                 </div>
               </div>
 
-              {/* FEATURES (45min-1.5hrs each) */}
+              {/* FEATURES */}
               <div>
                 <h4 className="text-sm font-semibold text-blue-700 mb-2">✨ Features to Build</h4>
                 <div className="grid md:grid-cols-2 gap-2">
-                  <TicketCard number="209" type="feature" title="Add event capacity badge (sold out/spots left)" duration="45min" complexity="Easy" />
-                  <TicketCard number="210" type="feature" title="Add 'Copy event' functionality" duration="1hr" complexity="Medium" />
-                  <TicketCard number="211" type="feature" title="Add event category filter chips" duration="1hr" complexity="Medium" />
-                  <TicketCard number="212" type="feature" title="Show upcoming events count on dashboard" duration="45min" complexity="Easy" />
-                  <TicketCard number="213" type="feature" title="Add event status badges (draft/published)" duration="45min" complexity="Easy" />
-                  <TicketCard number="214" type="feature" title="Add quick actions menu (3-dot menu)" duration="1hr" complexity="Medium" />
-                  <TicketCard number="215" type="feature" title="Add event sorting (date/price/capacity)" duration="1.5hrs" complexity="Medium" />
+                  <TicketCard number="F01" type="feature" title="Display a 'SOLD OUT' badge or 'X spots left' on event cards" duration="45min" complexity="Easy" />
+                  <TicketCard number="F02" type="feature" title="Add a 'Duplicate' button to create a new event from an existing one" duration="1h" complexity="Medium" />
+                  <TicketCard number="F03" type="feature" title="Allow sorting the events list by date, price, or capacity" duration="1h30" complexity="Medium" />
+                  <TicketCard number="F04" type="feature" title="Add quick filter buttons by category (clickable chips)" duration="1h" complexity="Medium" />
+                  <TicketCard number="F05" type="feature" title="Display a 'Draft' or 'Published' badge on each event in My Events" duration="45min" complexity="Easy" />
+                  <TicketCard number="F06" type="feature" title="Show the number of upcoming events on the user dashboard" duration="45min" complexity="Easy" />
+                  <TicketCard number="F07" type="feature" title="Add a 'Reset' button to clear all filters at once" duration="30min" complexity="Easy" />
                 </div>
               </div>
 
-              {/* REFACTORING (1-1.5hrs each) */}
+              {/* REFACTORING */}
               <div>
                 <h4 className="text-sm font-semibold text-purple-700 mb-2">🔧 Refactoring Tasks</h4>
                 <div className="grid md:grid-cols-2 gap-2">
-                  <TicketCard number="216" type="refactor" title="Extract event card into reusable component" duration="1hr" complexity="Medium" />
-                  <TicketCard number="217" type="refactor" title="Remove duplicate API calls on event page" duration="1hr" complexity="Medium" />
-                  <TicketCard number="218" type="refactor" title="Cleanup console.logs and commented code" duration="45min" complexity="Easy" />
-                  <TicketCard number="219" type="refactor" title="Add loading states to all buttons" duration="1hr" complexity="Easy" />
-                  <TicketCard number="220" type="refactor" title="Improve error messages (be specific!)" duration="1hr" complexity="Medium" />
+                  <TicketCard number="R01" type="refactor" title="Clean up my-events/index.jsx: the code is messy and hard to maintain" duration="1h30" complexity="Medium" />
+                  <TicketCard number="R02" type="refactor" title="Extract EventCard into a reusable component (currently duplicated)" duration="1h" complexity="Medium" />
+                  <TicketCard number="R03" type="refactor" title="Remove all console.log statements and commented/dead code from the project" duration="45min" complexity="Easy" />
+                  <TicketCard number="R04" type="refactor" title="Add loading states to all action buttons" duration="1h" complexity="Easy" />
+                  <TicketCard number="R05" type="refactor" title="Improve error messages: be more specific than 'An error occurred'" duration="1h" complexity="Medium" />
                 </div>
               </div>
 
-              {/* EDGE CASES (30min-1hr each) */}
+              {/* EDGE CASES */}
               <div>
                 <h4 className="text-sm font-semibold text-orange-700 mb-2">⚠️ Edge Cases to Handle</h4>
                 <div className="grid md:grid-cols-2 gap-2">
-                  <TicketCard number="221" type="bug" title="Handle events with 0 capacity" duration="30min" complexity="Easy" />
-                  <TicketCard number="222" type="bug" title="Handle timezone display issues" duration="1hr" complexity="Medium" />
-                  <TicketCard number="223" type="bug" title="Handle empty search results gracefully" duration="30min" complexity="Easy" />
-                  <TicketCard number="224" type="bug" title="Handle event title > 100 characters" duration="45min" complexity="Easy" />
+                  <TicketCard number="E01" type="bug" title="The available spots display breaks when capacity = 0 (division by zero)" duration="30min" complexity="Easy" />
+                  <TicketCard number="E02" type="bug" title="Event times display incorrectly for users in different timezones" duration="1h" complexity="Medium" />
+                  <TicketCard number="E03" type="bug" title="No message is displayed when search returns no results" duration="30min" complexity="Easy" />
+                  <TicketCard number="E04" type="bug" title="Very long event titles overflow their container and break the layout" duration="45min" complexity="Easy" />
+                  <TicketCard number="E05" type="bug" title="The event card shows 'undefined' when venue or city is not set" duration="30min" complexity="Easy" />
+                  <TicketCard number="E06" type="bug" title="Users can register for an event even after the registration deadline" duration="45min" complexity="Medium" />
                 </div>
               </div>
 
-              {/* COMMUNICATION TESTS (require asking questions!) */}
+              {/* COMMUNICATION TESTS */}
               <div>
                 <h4 className="text-sm font-semibold text-pink-700 mb-2">💬 Communication Tests (ASK BEFORE CODING!)</h4>
                 <div className="grid md:grid-cols-2 gap-2">
-                  <TicketCard number="225" type="feature" title="Add event image upload" duration="???" complexity="???" />
-                  <TicketCard number="226" type="feature" title="Add event sharing feature" duration="???" complexity="???" />
-                  <TicketCard number="227" type="feature" title="Export attendee list" duration="???" complexity="???" />
-                  <TicketCard number="228" type="feature" title="Add event reminders" duration="???" complexity="???" />
-                  <TicketCard number="229" type="bug" title="Search performance is slow" duration="???" complexity="???" />
-                  <TicketCard number="230" type="feature" title="Make registration deadline configurable" duration="???" complexity="???" />
+                  <TicketCard number="C01" type="feature" title="Add the ability to upload an image for an event" duration="???" complexity="???" />
+                  <TicketCard number="C02" type="feature" title="Allow sharing an event on social media" duration="???" complexity="???" />
+                  <TicketCard number="C03" type="feature" title="Export the attendee list as CSV or Excel" duration="???" complexity="???" />
+                  <TicketCard number="C04" type="feature" title="Send a reminder email to attendees before the event" duration="???" complexity="???" />
+                  <TicketCard number="C05" type="bug" title="Event search is very slow when there are many results" duration="???" complexity="???" />
+                  <TicketCard number="C06" type="feature" title="Allow the organizer to set a registration deadline" duration="???" complexity="???" />
                 </div>
                 <div className="mt-2 p-3 bg-pink-50 border border-pink-200 rounded text-xs text-pink-800">
-                  <p className="font-semibold mb-1">⚠️ These tickets are missing critical details!</p>
-                  <p>Ask questions about: scope, behavior, edge cases, format, who/when/where. Don't assume - clarify first.</p>
+                  <p className="font-semibold mb-1">⚠️ These tickets are intentionally incomplete!</p>
+                  <p>You MUST ask questions before starting: What format? What limits? What's the expected behavior? What edge cases?</p>
                 </div>
               </div>
             </div>
@@ -206,8 +240,7 @@ export default function Dashboard() {
             <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
               <p className="font-semibold text-yellow-900 mb-1">💡 Week 2 Strategy:</p>
               <p className="text-yellow-800 text-xs">
-                Start each day with 1-2 bugs (quick wins), then tackle features/refactoring. Mix easy + medium tickets. 
-                Ask for help after 30min if stuck - don't waste time!
+                Start each day with 1-2 bugs (quick wins), then tackle features/refactoring. Mix easy + medium tickets. Ask for help after 30min if stuck - don't waste time!
               </p>
             </div>
           </div>
@@ -218,9 +251,7 @@ export default function Dashboard() {
               <span className="text-3xl">🚪</span>
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Week 2 Gatekeeper: Collaboration & Quality</h3>
-                <p className="text-sm text-gray-700 mb-3">
-                  To move to Week 3, you must demonstrate:
-                </p>
+                <p className="text-sm text-gray-700 mb-3">To move to Week 3, you must demonstrate:</p>
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <h4 className="font-semibold text-indigo-900 mb-2">Technical</h4>
@@ -302,7 +333,8 @@ function TicketCard({ number, type, title, duration, complexity }) {
   const complexityColors = {
     Easy: "bg-green-100 text-green-700",
     Medium: "bg-yellow-100 text-yellow-700",
-    Hard: "bg-red-100 text-red-700"
+    Hard: "bg-red-100 text-red-700",
+    "???": "bg-pink-100 text-pink-700"
   }
 
   const config = typeConfig[type] || typeConfig.feature
@@ -314,9 +346,7 @@ function TicketCard({ number, type, title, duration, complexity }) {
           <span className="text-sm">{config.icon}</span>
           <span className="font-mono text-xs font-bold text-gray-700">#{number}</span>
         </div>
-        <span className={`text-xs px-2 py-0.5 rounded font-medium ${complexityColors[complexity]}`}>
-          {complexity}
-        </span>
+        <span className={`text-xs px-2 py-0.5 rounded font-medium ${complexityColors[complexity] || complexityColors["???"]}`}>{complexity}</span>
       </div>
       <div className="text-sm font-medium text-gray-900 mb-1">{title}</div>
       <div className="text-xs text-gray-500">⏱️ {duration}</div>
