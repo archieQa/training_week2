@@ -178,6 +178,11 @@ function EventCard({ event }) {
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <span className="inline-block px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded">{event.category}</span>
+          {event.capacity > 0 && event.available_spots === 0 ? ( 
+            <span className="inline-block px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded">Sold out</span>
+          ) : event.capacity > 0 ? (
+            <span className="inline-block px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded">Available spots: {event.available_spots}</span>
+          ): null }
           {event.price > 0 ? (
             <span className="text-sm font-bold text-gray-900">
               {event.price} {event.currency}
