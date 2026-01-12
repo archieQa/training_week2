@@ -1,402 +1,318 @@
-import React, { useState } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineUser } from "react-icons/ai"
 import useStore from "@/services/store"
 
 export default function Dashboard() {
   const { user } = useStore()
-  const [showArchitecture, setShowArchitecture] = useState(false)
-  const [showGitWorkflow, setShowGitWorkflow] = useState(false)
 
   return (
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Week 1: Mastering the API</h1>
-          <p className="text-sm text-gray-600 mt-1">Build your first full-stack module and master our architectural patterns</p>
+          <h1 className="text-2xl font-bold text-gray-900">Week 2: Shipping Quality Code</h1>
+          <p className="text-sm text-gray-600 mt-1">Learn how to collaborate effectively and ship small, focused PRs in a team environment</p>
         </div>
-        <div className="text-xs text-gray-500">
-          📚 README.md • <code className="bg-gray-100 px-2 py-0.5 rounded font-mono">npm run seed</code>
+        <div className="flex items-center gap-2">
+          <div className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded font-medium">✅ Week 1 Complete</div>
         </div>
       </div>
 
-      {/* Collapsible Architecture */}
-      <div className="mb-6">
-        <button
-          onClick={() => setShowArchitecture(!showArchitecture)}
-          className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
-          <span>{showArchitecture ? "▼" : "▶"}</span>
-          <span>Current API Architecture (reference)</span>
-        </button>
-        
-        {showArchitecture && (
-          <div className="mt-4">
-            <div className="grid grid-cols-2 gap-4">
-          {/* Controllers */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-blue-400 font-semibold">controllers/</span>
-              <span className="text-gray-500">HTTP endpoints</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>event.js</span>
-                <span className="text-gray-600 ml-auto">POST /event/*</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>attendee.js</span>
-                <span className="text-gray-600 ml-auto">POST /attendee/*</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>user.js</span>
-                <span className="text-gray-600 ml-auto">POST /user/*</span>
-              </div>
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>webhook.js</span>
-                <span className="text-gray-600 ml-auto">TO BUILD</span>
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              Frontend → API (HTTP)
-            </div>
-          </div>
-
-          {/* Services */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-purple-400 font-semibold">services/</span>
-              <span className="text-gray-500">External APIs</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>googleCalendar.js</span>
-              </div>
-              <div className="pl-6 text-gray-600 text-xs">
-                Export events to Google
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              API → External (Google, Stripe...)
-            </div>
-          </div>
-
-          {/* Crons */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-yellow-400 font-semibold">cron/</span>
-              <span className="text-gray-500">Scheduled jobs</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>eventReminders.js</span>
-              </div>
-              <div className="pl-6 text-gray-600 text-xs">
-                Send reminders 24h before
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              Time-triggered (automatic)
-            </div>
-          </div>
-
-          {/* Scripts */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-orange-400 font-semibold">scripts/</span>
-              <span className="text-gray-500">Manual CLI</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>seed.js</span>
-                <span className="text-gray-600 ml-auto text-xs">npm run seed</span>
-              </div>
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>cleanupBadEvents.js</span>
-              </div>
-              <div className="pl-6 text-gray-600 text-xs">
-                Delete events with 'not-good'
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              Manual command (npm run)
-            </div>
-          </div>
-
-          {/* Models */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs col-span-2">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-emerald-400 font-semibold">models/</span>
-              <span className="text-gray-500">MongoDB schemas</span>
-            </div>
-            <div className="grid grid-cols-3 gap-4 text-gray-300">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-green-400">✓</span>
-                  <span>user.js</span>
-                </div>
-                <div className="pl-6 text-gray-600 text-xs">name, email, password</div>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-green-400">✓</span>
-                  <span>event.js</span>
-                </div>
-                <div className="pl-6 text-gray-600 text-xs">title, dates, capacity</div>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-green-400">✓</span>
-                  <span>attendee.js</span>
-                </div>
-                <div className="pl-6 text-gray-600 text-xs">event_id, user_id, status</div>
-              </div>
-            </div>
-          </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Collapsible Git Workflow */}
-      <div className="mb-6">
-        <button
-          onClick={() => setShowGitWorkflow(!showGitWorkflow)}
-          className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
-          <span>{showGitWorkflow ? "▼" : "▶"}</span>
-          <span>Git Workflow & Pull Requests</span>
-        </button>
-        
-        {showGitWorkflow && (
-          <div className="mt-4 bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-lg p-6">
+      {/* Week 2: Collaboration & Tickets */}
+      <div className="max-w-5xl">
+        <div className="space-y-6">
+          {/* MONDAY: Kickoff */}
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-6">
             <div className="flex items-start gap-4">
-              <div className="text-3xl">🔀</div>
+              <span className="text-3xl">🚀</span>
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">One PR per Feature</h3>
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xl font-bold text-gray-900">MONDAY: Kickoff with your manager</h2>
+                  <span className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded font-medium">9am-1pm</span>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <p className="font-semibold text-gray-900 mb-2">✅ DO:</p>
-                    <ul className="space-y-1 text-gray-700">
-                      <li>• <strong>Fork first</strong> - work on your own copy</li>
-                      <li>• <strong>One feature = One PR</strong> (Venue, Calendar, Script...)</li>
-                      <li>• <strong>Full-stack & working</strong> - Backend + Frontend, tested</li>
-                      <li>• <strong>Self-contained</strong> - Each PR works independently</li>
-                      <li>• <strong>Clear commits</strong> - <code className="bg-indigo-100 px-1 rounded">feat: add venue module</code></li>
+                    <h4 className="font-semibold text-purple-900 mb-2 text-sm">Collaboration Patterns</h4>
+                    <ul className="text-xs text-purple-800 space-y-1">
+                      <li>• How to read tickets</li>
+                      <li>• How to ask good questions</li>
+                      <li>• Code review feedback</li>
+                      <li>• When to ask vs research</li>
                     </ul>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 mb-2">❌ DON'T:</p>
-                    <ul className="space-y-1 text-gray-700">
-                      <li>• Don't submit giant PRs with multiple features</li>
-                      <li>• Don't submit incomplete features (only backend)</li>
-                      <li>• Don't submit broken code or linter errors</li>
-                      <li>• Don't mix unrelated changes in one PR</li>
+                    <h4 className="font-semibold text-purple-900 mb-2 text-sm">Coding Mindset</h4>
+                    <ul className="text-xs text-purple-800 space-y-1">
+                      <li>• Ship small, ship often</li>
+                      <li>• Self-review before submitting</li>
+                      <li>• Test edge cases first</li>
+                      <li>• Clarity over cleverness</li>
                     </ul>
-                    <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs">
-                      <strong>Example:</strong> PR #1 = Venue (model + controller + pages), PR #2 = Calendar Service, PR #3 = Cleanup Script
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-purple-900 mb-2 text-sm">Priorities</h4>
+                    <ul className="text-xs text-purple-800 space-y-1">
+                      <li>• Urgent vs Important</li>
+                      <li>• Unblock others first</li>
+                      <li>• Communicate delays early</li>
+                      <li>• Realistic estimates</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* DAILY WORKFLOW */}
+          <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+            <div className="flex items-start gap-4 mb-4">
+              <span className="text-3xl">📅</span>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-gray-900 mb-2">TUE-FRI: Daily Workflow</h2>
+                <p className="text-sm text-gray-600">Practice shipping quality code with real tickets</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                <div className="font-mono text-blue-600 font-bold">9:00am</div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">Standup</div>
+                  <div className="text-gray-600 text-xs mt-1">Yesterday, Today, Blockers - be clear and concise</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                <div className="font-mono text-green-600 font-bold">9:15am-4pm</div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">Work on Tickets (3-4/day)</div>
+                  <div className="text-gray-600 text-xs mt-1 space-y-1">
+                    <div>• Start with 1-2 quick bugs (warm up)</div>
+                    <div>• Each ticket = one focused PR (30min-1.5hrs)</div>
+                    <div>• Ask questions after 30min if stuck</div>
+                    <div>• Self-review + test before submitting</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
+                <div className="font-mono text-purple-600 font-bold">Throughout</div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">Submit PRs as you go</div>
+                  <div className="text-gray-600 text-xs mt-1">Don't wait til end of day! Submit each ticket when done. Small PRs = fast reviews.</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
+                <div className="font-mono text-orange-600 font-bold">4:30pm</div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">Trainer Review</div>
+                  <div className="text-gray-600 text-xs mt-1">Receive feedback, extract 1 improvement for next PR</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* AVAILABLE TICKETS */}
+          <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+            <div className="flex items-start gap-4 mb-4">
+              <span className="text-3xl">🎫</span>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Available Tickets (Goal: 12-15 this week)</h2>
+                <p className="text-sm text-gray-600">Each ticket = 30min-1.5hrs. Ship 3-4 tickets/day. One PR per ticket.</p>
+                <div className="mt-2 flex gap-2 text-xs">
+                  <span className="px-2 py-1 bg-red-50 text-red-700 rounded">🐛 Bug = Something is broken, fix it</span>
+                  <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded">✨ Feature = Build something new</span>
+                  <span className="px-2 py-1 bg-purple-50 text-purple-700 rounded">🔧 Refactor = Improve existing code</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {/* BUG FIXES */}
+              <div>
+                <h4 className="text-sm font-semibold text-red-700 mb-2">🐛 Bugs to Fix</h4>
+                <div className="grid md:grid-cols-2 gap-2">
+                  <TicketCard
+                    number="B01"
+                    type="bug"
+                    title="Event Page: The 'Edit' button never shows up, even when I'm the organizer of the event"
+                    duration="45min"
+                    complexity="Medium"
+                  />
+                  <TicketCard
+                    number="B02"
+                    type="bug"
+                    title="Events Search: When I type in the search box or change category, I have to click 'Search' - it should update automatically"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B03"
+                    type="bug"
+                    title="Event Page: All tabs look the same - I can't tell which one is currently selected"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B04"
+                    type="bug"
+                    title="Create Event Modal: When I close the modal without submitting, then reopen it, my previous text is still there"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B05"
+                    type="bug"
+                    title="Event Card: The progress bar shows the wrong percentage - text says '30/100 filled' but bar shows 70% full"
+                    duration="30min"
+                    complexity="Easy"
+                  />
+                  <TicketCard
+                    number="B06"
+                    type="bug"
+                    title="Edit Event: I can set the end date to be before the start date and it saves without any error"
+                    duration="45min"
+                    complexity="Medium"
+                  />
+                </div>
+              </div>
+
+              {/* FEATURES */}
+              <div>
+                <h4 className="text-sm font-semibold text-blue-700 mb-2">✨ Features to Build</h4>
+                <div className="grid md:grid-cols-2 gap-2">
+                  <TicketCard number="F01" type="feature" title="Display a 'SOLD OUT' badge or 'X spots left' on event cards" duration="45min" complexity="Easy" />
+                  <TicketCard number="F02" type="feature" title="Add a 'Duplicate' button to create a new event from an existing one" duration="1h" complexity="Medium" />
+                  <TicketCard number="F03" type="feature" title="Allow sorting the events list by date, price, or capacity" duration="1h30" complexity="Medium" />
+                  <TicketCard number="F04" type="feature" title="Add quick filter buttons by category (clickable chips)" duration="1h" complexity="Medium" />
+                  <TicketCard number="F05" type="feature" title="Display a 'Draft' or 'Published' badge on each event in My Events" duration="45min" complexity="Easy" />
+                  <TicketCard number="F06" type="feature" title="Show the number of upcoming events on the user dashboard" duration="45min" complexity="Easy" />
+                  <TicketCard number="F07" type="feature" title="Add a 'Reset' button to clear all filters at once" duration="30min" complexity="Easy" />
+                </div>
+              </div>
+
+              {/* REFACTORING */}
+              <div>
+                <h4 className="text-sm font-semibold text-purple-700 mb-2">🔧 Refactoring Tasks</h4>
+                <div className="grid md:grid-cols-2 gap-2">
+                  <TicketCard number="R01" type="refactor" title="Clean up my-events/index.jsx: the code is messy and hard to maintain" duration="1h30" complexity="Medium" />
+                  <TicketCard number="R02" type="refactor" title="Extract EventCard into a reusable component (currently duplicated)" duration="1h" complexity="Medium" />
+                  <TicketCard number="R03" type="refactor" title="Remove all console.log statements and commented/dead code from the project" duration="45min" complexity="Easy" />
+                  <TicketCard number="R04" type="refactor" title="Add loading states to all action buttons" duration="1h" complexity="Easy" />
+                  <TicketCard number="R05" type="refactor" title="Improve error messages: be more specific than 'An error occurred'" duration="1h" complexity="Medium" />
+                </div>
+              </div>
+
+              {/* EDGE CASES */}
+              <div>
+                <h4 className="text-sm font-semibold text-orange-700 mb-2">⚠️ Edge Cases to Handle</h4>
+                <div className="grid md:grid-cols-2 gap-2">
+                  <TicketCard number="E01" type="bug" title="The available spots display breaks when capacity = 0 (division by zero)" duration="30min" complexity="Easy" />
+                  <TicketCard number="E02" type="bug" title="Event times display incorrectly for users in different timezones" duration="1h" complexity="Medium" />
+                  <TicketCard number="E03" type="bug" title="No message is displayed when search returns no results" duration="30min" complexity="Easy" />
+                  <TicketCard number="E04" type="bug" title="Very long event titles overflow their container and break the layout" duration="45min" complexity="Easy" />
+                  <TicketCard number="E05" type="bug" title="The event card shows 'undefined' when venue or city is not set" duration="30min" complexity="Easy" />
+                  <TicketCard number="E06" type="bug" title="Users can register for an event even after the registration deadline" duration="45min" complexity="Medium" />
+                </div>
+              </div>
+
+              {/* COMMUNICATION TESTS */}
+              <div>
+                <h4 className="text-sm font-semibold text-pink-700 mb-2">💬 Communication Tests (ASK BEFORE CODING!)</h4>
+                <div className="grid md:grid-cols-2 gap-2">
+                  <TicketCard number="C01" type="feature" title="Add the ability to upload an image for an event" duration="???" complexity="???" />
+                  <TicketCard number="C02" type="feature" title="Allow sharing an event on social media" duration="???" complexity="???" />
+                  <TicketCard number="C03" type="feature" title="Export the attendee list as CSV or Excel" duration="???" complexity="???" />
+                  <TicketCard number="C04" type="feature" title="Send a reminder email to attendees before the event" duration="???" complexity="???" />
+                  <TicketCard number="C05" type="bug" title="Event search is very slow when there are many results" duration="???" complexity="???" />
+                  <TicketCard number="C06" type="feature" title="Allow the organizer to set a registration deadline" duration="???" complexity="???" />
+                </div>
+                <div className="mt-2 p-3 bg-pink-50 border border-pink-200 rounded text-xs text-pink-800">
+                  <p className="font-semibold mb-1">⚠️ These tickets are intentionally incomplete!</p>
+                  <p>You MUST ask questions before starting: What format? What limits? What's the expected behavior? What edge cases?</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+              <p className="font-semibold text-yellow-900 mb-1">💡 Week 2 Strategy:</p>
+              <p className="text-yellow-800 text-xs">
+                Start each day with 1-2 bugs (quick wins), then tackle features/refactoring. Mix easy + medium tickets. Ask for help after 30min if stuck - don't waste time!
+              </p>
+            </div>
+          </div>
+
+          {/* WEEK 2 GATEKEEPER */}
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-lg p-6">
+            <div className="flex items-start gap-4">
+              <span className="text-3xl">🚪</span>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Week 2 Gatekeeper: Collaboration & Quality</h3>
+                <p className="text-sm text-gray-700 mb-3">To move to Week 3, you must demonstrate:</p>
+                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <h4 className="font-semibold text-indigo-900 mb-2">Technical</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>12-15 PRs merged (3-4/day)</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>Mix: bugs + features + refactoring</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>Code quality consistent</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>All PRs small & focused</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-indigo-900 mb-2">Collaboration</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>PRs are small, focused</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>Good commit messages</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>Self-reviews before submitting</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>Asks when stuck (doesn't waste time)</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>Addresses feedback quickly</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>Estimates improve over week</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex items-center gap-3 text-xs text-gray-600">
-                  <code className="bg-gray-800 text-green-400 px-2 py-1 rounded font-mono">git checkout -b feature/venue-module</code>
-                  <span>→</span>
-                  <code className="bg-gray-800 text-green-400 px-2 py-1 rounded font-mono">git push origin feature/venue-module</code>
-                  <span>→</span>
-                  <span className="text-indigo-600 font-semibold">Create PR from your fork</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Week 1 Tasks */}
-      <div className="max-w-5xl">
-        <div className="space-y-6">
-          {/* DAY 1: Study & Setup */}
-          <TaskCard
-            day="DAY 1"
-            title="Study: Event Module (Full Stack)"
-            duration="4-6 hours"
-            icon="📖"
-            what="Understand how a complete CRUD module works"
-            why="This is your blueprint - you'll copy this pattern for Venue"
-            tasks={[
-              {
-                label: "Read Backend",
-                files: ["api/src/models/event.js", "api/src/controllers/event.js"],
-                notes: "Focus on 📚 comments - they explain WHY",
-              },
-              {
-                label: "Read Frontend",
-                files: ["app/src/scenes/events/list.jsx", "app/src/scenes/events/view/*"],
-                notes: "See how frontend calls backend endpoints",
-              },
-              {
-                label: "Test Features",
-                notes: "Create event, edit, delete, search - understand the flow",
-              },
-            ]}
-            resources={[
-              { label: "Mongoose Docs", url: "https://mongoosejs.com/docs/guide.html" },
-              { label: "Express Routing", url: "https://expressjs.com/en/guide/routing.html" },
-              { label: "POST /search pattern", note: "See event.js line 27-40" },
-            ]}
-            deliverable="Can explain: Why POST for search? What's pagination? Why denormalize organizer?"
-          />
-
-          {/* DAY 2-3: Build Venue Module */}
-          <TaskCard
-            day="DAY 2-3"
-            title="Build: Venue Module (Full Stack)"
-            duration="12-16 hours"
-            icon="🏢"
-            what="Create a complete CRUD module from scratch"
-            why="Prove you understand the pattern by replicating it"
-            tasks={[
-              {
-                label: "Backend (Day 2 morning)",
-                files: ["api/src/models/venue.js", "api/src/controllers/venue.js"],
-                notes: "Fields: name, address, city, capacity, amenities, image_url, owner_id",
-              },
-              {
-                label: "Register Route",
-                files: ["api/src/index.js"],
-                notes: 'Add: app.use("/venue", require("./controllers/venue"))',
-              },
-              {
-                label: "Frontend (Day 2 afternoon + Day 3)",
-                files: ["app/src/scenes/venues/index.jsx", "app/src/scenes/venues/list.jsx", "app/src/scenes/venues/view/*"],
-                notes: "Copy Event pages structure (index, list, view tabs), adapt for Venue fields",
-              },
-              {
-                label: "Test Everything",
-                notes: "Create, search, update, delete venues - all should work",
-              },
-            ]}
-            resources={[
-              { label: "Reference", note: "Copy Event module 1:1, change field names" },
-              { label: "Security", note: "Remember: owner_id from req.user, not req.body!" },
-              { label: "Routes", note: "POST /venue/search, POST /venue/my-venues/search, etc." },
-            ]}
-            deliverable="Working Venue module with CRUD + search. Can create PR with clear commit messages."
-          />
-
-          {/* DAY 4: Services & Webhooks */}
-          <TaskCard
-            day="DAY 4"
-            title="Build: Google Calendar Integration"
-            duration="6-8 hours"
-            icon="🔌"
-            what="Service (export) + Webhook (receive updates)"
-            why="Learn the difference: Service = we call them, Webhook = they call us"
-            tasks={[
-              {
-                label: "Service",
-                files: ["api/src/services/googleCalendar.js"],
-                notes: "Function: exportEvent(eventId) → posts to Google Calendar API",
-              },
-              {
-                label: "Webhook",
-                files: ["api/src/controllers/webhook.js"],
-                notes: "POST /webhook/calendar-sync → receives updates from Google",
-              },
-              {
-                label: "Call Service from Controller",
-                notes: "In event.js, call googleCalendar.exportEvent() after event creation",
-              },
-            ]}
-            resources={[
-              { label: "Google Calendar API", url: "https://developers.google.com/calendar/api/v3/reference" },
-              { label: "Webhooks Explained", url: "https://www.svix.com/resources/guides/what-is-a-webhook/" },
-              { label: "Key Difference", note: "Service = YOU call API. Webhook = API calls YOU." },
-            ]}
-            deliverable="Can explain: When to use Service vs Webhook? How does Google notify us of changes?"
-          />
-
-          {/* DAY 5: Cron & Script */}
-          <TaskCard
-            day="DAY 5"
-            title="Build: Cron Job + Cleanup Script"
-            duration="4-6 hours"
-            icon="⏰"
-            what="Scheduled task (cron) + Manual script"
-            why="Learn when code runs automatically vs manually"
-            tasks={[
-              {
-                label: "Cron Job",
-                files: ["api/src/cron/eventReminders.js"],
-                notes: "Runs every hour, finds events starting in 24h, sends emails",
-              },
-              {
-                label: "Setup Cron",
-                files: ["api/src/index.js"],
-                notes: "Register cron: require('./cron/eventReminders').start()",
-              },
-              {
-                label: "Cleanup Script",
-                files: ["api/src/scripts/cleanupBadEvents.js"],
-                notes: "Finds & deletes events with 'not-good' in title (run seed to see test data)",
-              },
-              {
-                label: "Add npm script",
-                files: ["api/package.json"],
-                notes: '"cleanup": "node ./src/scripts/cleanupBadEvents.js"',
-              },
-            ]}
-            resources={[
-              { label: "node-cron", url: "https://www.npmjs.com/package/node-cron" },
-              { label: "Test Data", note: "Seed creates 3 events with 'not-good' in title" },
-              { label: "Key Difference", note: "Cron = automatic (time-based). Script = manual (npm run)." },
-            ]}
-            deliverable="Cron runs automatically. Script runs on command. Can explain when to use each."
-          />
-
-          {/* Gatekeeper */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 rounded-lg p-6">
-            <div className="flex items-start gap-3">
-              <span className="text-3xl">🚪</span>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Week 1 Gatekeeper: The "WHY" Check</h3>
-                <p className="text-sm text-gray-700 mb-3">
-                  Before moving to Week 2, you must be able to explain (without looking at code):
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 font-bold">1.</span>
-                    <span><strong>POST vs GET for search:</strong> Why do we use POST /event/search instead of GET?</span>
+                <div className="mt-4 pt-4 border-t border-indigo-200 grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs font-semibold text-red-700 mb-1">🚨 RED FLAGS (1-on-1 required):</p>
+                    <p className="text-xs text-red-600">No commits 24hrs+, stuck 3+ days, missing standups, can't explain code</p>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 font-bold">2.</span>
-                    <span><strong>Service vs Webhook:</strong> When do you create a Service file vs a Webhook endpoint?</span>
+                  <div>
+                    <p className="text-xs font-semibold text-green-700 mb-1">💡 FAST-TRACK:</p>
+                    <p className="text-xs text-green-600">Finishes early, insightful questions, proactive, applies feedback immediately</p>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 font-bold">3.</span>
-                    <span><strong>Cron vs Script:</strong> When do you use a Cron job vs a manual Script?</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 font-bold">4.</span>
-                    <span><strong>Security:</strong> Why do we set organizer_id from req.user instead of req.body?</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 font-bold">5.</span>
-                    <span><strong>Denormalization:</strong> Why store organizer_name in Event model instead of just organizer_id?</span>
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t border-indigo-200">
-                  <p className="text-xs text-gray-600">
-                    💡 <strong>Hint:</strong> All answers are in the 📚 comments in event.js. Understanding WHY > memorizing HOW.
-                  </p>
                 </div>
               </div>
             </div>
@@ -407,88 +323,33 @@ export default function Dashboard() {
   )
 }
 
-function TaskCard({ day, title, duration, icon, what, why, tasks, resources, deliverable }) {
+function TicketCard({ number, type, title, duration, complexity }) {
+  const typeConfig = {
+    bug: { icon: "🐛", color: "border-red-200 bg-red-50 hover:border-red-300" },
+    feature: { icon: "✨", color: "border-blue-200 bg-blue-50 hover:border-blue-300" },
+    refactor: { icon: "🔧", color: "border-purple-200 bg-purple-50 hover:border-purple-300" }
+  }
+
+  const complexityColors = {
+    Easy: "bg-green-100 text-green-700",
+    Medium: "bg-yellow-100 text-yellow-700",
+    Hard: "bg-red-100 text-red-700",
+    "???": "bg-pink-100 text-pink-700"
+  }
+
+  const config = typeConfig[type] || typeConfig.feature
+
   return (
-    <div className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">{icon}</span>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">{day}</span>
-              <span className="text-xs text-gray-500">~{duration}</span>
-            </div>
-            <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-          </div>
+    <div className={`p-3 border-2 rounded-lg transition-colors ${config.color}`}>
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <span className="text-sm">{config.icon}</span>
+          <span className="font-mono text-xs font-bold text-gray-700">#{number}</span>
         </div>
+        <span className={`text-xs px-2 py-0.5 rounded font-medium ${complexityColors[complexity] || complexityColors["???"]}`}>{complexity}</span>
       </div>
-
-      {/* What & Why */}
-      <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
-        <div>
-          <div className="text-xs font-semibold text-gray-700 mb-1">💡 WHAT</div>
-          <div className="text-sm text-gray-600">{what}</div>
-        </div>
-        <div>
-          <div className="text-xs font-semibold text-gray-700 mb-1">🎯 WHY</div>
-          <div className="text-sm text-gray-600">{why}</div>
-        </div>
-      </div>
-
-      {/* Tasks */}
-      <div className="mb-4">
-        <div className="text-xs font-semibold text-gray-900 mb-2">✅ TODO:</div>
-        <div className="space-y-3">
-          {tasks.map((task, idx) => (
-            <div key={idx} className="flex items-start gap-2">
-              <div className="flex-shrink-0 w-5 h-5 rounded border-2 border-gray-300 mt-0.5"></div>
-              <div className="flex-1">
-                <div className="text-sm font-medium text-gray-900">{task.label}</div>
-                {task.files && (
-                  <div className="mt-1 space-y-1">
-                    {task.files.map((file, i) => (
-                      <code key={i} className="text-xs bg-gray-100 px-2 py-0.5 rounded font-mono text-gray-700 block w-fit">
-                        {file}
-                      </code>
-                    ))}
-                  </div>
-                )}
-                {task.notes && <div className="text-xs text-gray-600 mt-1">{task.notes}</div>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Resources */}
-      {resources && (
-        <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-          <div className="text-xs font-semibold text-blue-900 mb-2">📚 RESOURCES:</div>
-          <div className="space-y-1">
-            {resources.map((resource, idx) => (
-              <div key={idx} className="text-xs">
-                {resource.url ? (
-                  <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                    → {resource.label}
-                  </a>
-                ) : (
-                  <span className="text-gray-700">
-                    → <strong>{resource.label}:</strong> {resource.note}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Deliverable */}
-      <div className="pt-3 border-t border-gray-200">
-        <div className="text-xs font-semibold text-green-700 mb-1">🎓 DELIVERABLE:</div>
-        <div className="text-sm text-gray-700">{deliverable}</div>
-      </div>
+      <div className="text-sm font-medium text-gray-900 mb-1">{title}</div>
+      <div className="text-xs text-gray-500">⏱️ {duration}</div>
     </div>
   )
 }
-

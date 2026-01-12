@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { AiOutlineHome, AiOutlineCalendar, AiOutlinePlus, AiOutlineUser } from "react-icons/ai"
-import { HiOutlineTicket } from "react-icons/hi"
+import { HiOutlineTicket, HiOutlineBookOpen } from "react-icons/hi"
 
 const MENU = [
-  { title: "Mastering the API", to: "/dashboard", logo: <AiOutlineHome className="h-5 w-5" /> },
+  { title: "Working Habits", to: "/dashboard", logo: <AiOutlineHome className="h-5 w-5" /> },
+  { title: "Week 1 Reference", to: "/week1-reference", logo: <HiOutlineBookOpen className="h-5 w-5" /> },
   { title: "Discover Events", to: "/", logo: <AiOutlineCalendar className="h-5 w-5" /> },
   { title: "My Events", to: "/my-events", logo: <AiOutlineCalendar className="h-5 w-5" /> },
   { title: "My Registrations", to: "/my-registrations", logo: <HiOutlineTicket className="h-5 w-5" /> },

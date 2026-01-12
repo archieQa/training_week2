@@ -5,6 +5,7 @@ import * as Sentry from "@sentry/browser"
 
 import Auth from "@/scenes/auth"
 import Dashboard from "@/scenes/dashboard"
+import Week1Reference from "@/scenes/week1-reference"
 import Events from "@/scenes/events"
 import Account from "@/scenes/account"
 import EventView from "@/scenes/events/view"
@@ -33,6 +34,7 @@ export default function App() {
         </Route>
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/week1-reference" element={<Week1Reference />} />
           <Route path="/*" element={<Events />} />
           <Route path="/event/:id/*" element={<EventView />} />
           <Route path="/my-events" element={<MyEvents />} />

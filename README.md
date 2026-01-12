@@ -36,16 +36,19 @@ ENVIRONMENT=development
 ```
 
 Start the server:
+
 ```bash
 npm run dev
 ```
 
 Seed sample data (optional):
+
 ```bash
 npm run seed
 ```
 
 Test users:
+
 - john@example.com / password123
 - jane@example.com / password123
 - admin@example.com / admin123
@@ -95,12 +98,14 @@ git push origin feature/venue-module
 ### PR Best Practices
 
 **✅ DO:**
+
 - One PR per feature (Venue, Calendar Service, Webhook, etc.)
 - Full-stack & working (backend + frontend)
 - Small but complete (focused on ONE feature)
 - Clear commit messages (`feat:`, `fix:`, `refactor:`)
 
 **❌ DON'T:**
+
 - Giant PRs with multiple features
 - Incomplete features (only backend or only frontend)
 - Broken code or linter errors
@@ -110,6 +115,7 @@ git push origin feature/venue-module
 ## 📚 What You'll Learn
 
 ### Week 1: Core Patterns
+
 - Controllers vs Services vs Webhooks vs Crons vs Scripts
 - MongoDB models and schemas
 - Express routing and middleware
@@ -117,12 +123,14 @@ git push origin feature/venue-module
 - POST /search pattern for filtering
 
 ### Week 2: Integrations
+
 - External API integrations (Google Calendar)
 - Webhook handling
 - Scheduled jobs (cron)
 - Email notifications
 
 ### Week 3: Advanced Features
+
 - Payment processing (Stripe)
 - QR code generation
 - Analytics and reporting
