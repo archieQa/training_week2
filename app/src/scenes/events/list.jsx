@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser } from "react-icons/ai"
+import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 
 export default function ListView() {
-  const [events, setEvents] = useState([])
+  const [allEvents, setAllEvents] = useState([])
+  const [filteredEvents, setFilteredEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({ search: "", category: "", city: "" })
+  const [sortBy, setSortBy] = useState("")
 
   useEffect(() => {
     fetchEvents()
   }, [])
-
 
   useEffect(() => {
     const timeoutId = setTimeout(() => { fetchEvents() }, 200) 
     return () => clearTimeout(timeoutId)
   }, [filters])
 
+  useEffect(() => {
+    applySort()
+  }, [allEvents, sortBy])
 
   const fetchEvents = async () => {
     try {
@@ -27,17 +31,47 @@ export default function ListView() {
         search: filters.search,
         category: filters.category,
         city: filters.city,
-        per_page: 20,
+        per_page: 100,
         page: 1
       })
 
       if (!ok) throw new Error("Failed to fetch events")
-      setEvents(data || [])
+      setAllEvents(data || [])
     } catch (error) {
       toast.error("Could not load events")
     } finally {
       setLoading(false)
     }
+  }
+
+  const applySort = () => {
+    let sorted = [...allEvents]
+
+    switch (sortBy) {
+      case "latest_date":
+        sorted.sort((a, b) => new Date(b.start_date) - new Date(a.start_date))
+        break
+      case "earliest_date":
+        sorted.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+        break
+      case "lowest_price":
+        sorted.sort((a, b) => a.price - b.price)
+        break
+      case "highest_price":
+        sorted.sort((a, b) => b.price - a.price)
+        break
+      case "biggest_capacity":
+        sorted.sort((a, b) => b.capacity - a.capacity)
+        break
+      case "smallest_capacity":
+        sorted.sort((a, b) => a.capacity - b.capacity)
+        break
+      default:
+        // Default: no sorting, keep original order
+        break
+    }
+
+    setFilteredEvents(sorted)
   }
 
   const handleSearch = e => {
@@ -125,13 +159,31 @@ export default function ListView() {
             />
           </div>
         </div>
-        <button type="submit" className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          Search Events
-        </button>
+        <div className="flex items-center justify-between gap-4 mt-4">
+          <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            Search Events
+          </button>
+          <div className="relative">
+            <select
+              className="px-4 py-2 pl-10 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value)}
+            >
+              <option value="">Filter</option>
+              <option value="latest_date">Latest Date</option>
+              <option value="earliest_date">Earliest Date</option>
+              <option value="lowest_price">Lowest Price</option>
+              <option value="highest_price">Highest Price</option>
+              <option value="biggest_capacity">Biggest Capacity</option>
+              <option value="smallest_capacity">Smallest Capacity</option>
+            </select>
+            <AiOutlineFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
+          </div>
+        </div>
       </form>
 
       {/* Events List */}
-      {events.length === 0 ? (
+      {filteredEvents.length === 0 ? (
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
             <AiOutlineCalendar className="w-8 h-8 text-gray-400" />
@@ -146,7 +198,7 @@ export default function ListView() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map(event => (
+          {filteredEvents.map(event => (
             <EventCard key={event._id} event={event} />
           ))}
         </div>
