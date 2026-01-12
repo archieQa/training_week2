@@ -133,22 +133,6 @@ export default function ListView() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={filters.category}
-              onChange={e => setFilters({ ...filters, category: e.target.value })}
-            >
-              <option value="">All Categories</option>
-              <option value="conference">Conference</option>
-              <option value="workshop">Workshop</option>
-              <option value="seminar">Seminar</option>
-              <option value="networking">Networking</option>
-              <option value="social">Social</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
             <input
               type="text"
@@ -181,6 +165,52 @@ export default function ListView() {
           </div>
         </div>
       </form>
+      <div className="mb-6">
+      <div className="flex items-center gap-2 mt-4 flex-wrap">
+        <button 
+          onClick={() => setFilters({ ...filters, category: "" })} 
+          className={`px-3 py-1 rounded ${filters.category === "" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+        >
+          All
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, category: "conference" })}
+          className={`px-3 py-1 rounded ${filters.category === "conference" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+        >
+          Conference
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, category: "workshop" })}
+          className={`px-3 py-1 rounded ${filters.category === "workshop" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+        >
+          Workshop
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, category: "seminar" })}
+          className={`px-3 py-1 rounded ${filters.category === "seminar" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+        >
+          Seminar
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, category: "networking" })}
+          className={`px-3 py-1 rounded ${filters.category === "networking" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+        >
+          Networking
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, category: "social" })}
+          className={`px-3 py-1 rounded ${filters.category === "social" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+        >
+          Social
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, category: "other" })}
+          className={`px-3 py-1 rounded ${filters.category === "other" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+        >
+          Other
+        </button>
+      </div>
+      </div>
 
       {/* Events List */}
       {filteredEvents.length === 0 ? (
