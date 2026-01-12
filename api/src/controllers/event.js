@@ -334,4 +334,49 @@ router.delete("/:id", passport.authenticate(["user", "admin"], { session: false 
   }
 });
 
+
+router.post("/duplicate/:id", passport.authenticate("user", { session: false }), async (req, res) => {
+  try {
+    const originalEvent = await EventObject.findById(req.params.id);
+    if (!originalEvent) return res.status(404).send({ ok: false, code: ERROR_CODES.NOT_FOUND });
+
+
+    const isOwner = originalEvent.organizer_id.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).send({ ok: false, code: "FORBIDDEN" });
+    }
+
+    const duplicate = await EventObject.create({
+      title: `${originalEvent.title} (Copy)`,
+      description: originalEvent.description,
+      start_date: originalEvent.start_date,
+      end_date: originalEvent.end_date,
+      venue: originalEvent.venue,
+      address: originalEvent.address,
+      city: originalEvent.city,
+      country: originalEvent.country,
+      capacity: originalEvent.capacity,
+      available_spots: originalEvent.capacity || 0, 
+      price: originalEvent.price,
+      currency: originalEvent.currency,
+      status: "draft", 
+      category: originalEvent.category,
+      image_url: originalEvent.image_url,
+      registration_deadline: originalEvent.registration_deadline,
+      requires_approval: originalEvent.requires_approval,
+      organizer_id: req.user._id, 
+      organizer_name: req.user.name,
+      organizer_email: req.user.email,
+    });
+
+    return res.status(200).send({ ok: true, data: duplicate });
+  } catch (error) {
+    capture(error);
+    res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
+  }
+})
+
+
 module.exports = router;
