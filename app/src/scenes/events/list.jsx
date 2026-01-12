@@ -13,6 +13,13 @@ export default function ListView() {
     fetchEvents()
   }, [])
 
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => { fetchEvents() }, 200) 
+    return () => clearTimeout(timeoutId)
+  }, [filters])
+
+
   const fetchEvents = async () => {
     try {
       setLoading(true)
