@@ -56,6 +56,11 @@ export default function EditTab({ event, fetchEvent }) {
       return
     }
 
+    if (formData.end_date && new Date(formData.end_date) <= new Date(formData.start_date)) {
+      toast.error("End date must be after start date")
+      return
+    }
+
     try {
       setSaving(true)
       const { ok } = await api.put(`/event/${id}`, formData)
@@ -73,6 +78,12 @@ export default function EditTab({ event, fetchEvent }) {
   }
 
   const handlePublish = async () => {
+
+    if (formData.end_date && new Date(formData.end_date) <= new Date(formData.start_date)) {
+      toast.error("End date must be after start date")
+      return
+    }
+    
     try {
       setSaving(true)
       const { ok } = await api.put(`/event/${id}`, { ...formData, status: "published" })
