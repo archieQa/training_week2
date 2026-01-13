@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter } from "react-icons/ai"
+import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter, AiOutlineDelete } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 
@@ -77,6 +77,11 @@ export default function ListView() {
   const handleSearch = e => {
     e.preventDefault()
     fetchEvents()
+  }
+
+  const clearFilters = () => {
+    setFilters({ search: "", category: "", city: "" })
+    setSortBy("")
   }
 
   if (loading) {
@@ -163,21 +168,31 @@ export default function ListView() {
           <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             Search Events
           </button>
-          <div className="relative">
-            <select
-              className="px-4 py-2 pl-10 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <select
+                className="px-4 py-2 pl-10 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+              >
+                <option value="">No filters</option>
+                <option value="latest_date">Latest Date</option>
+                <option value="earliest_date">Earliest Date</option>
+                <option value="lowest_price">Lowest Price</option>
+                <option value="highest_price">Highest Price</option>
+                <option value="biggest_capacity">Biggest Capacity</option>
+                <option value="smallest_capacity">Smallest Capacity</option>
+              </select>
+              <AiOutlineFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
+            </div>
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              title="Remove all filters"
             >
-              <option value="">Filter</option>
-              <option value="latest_date">Latest Date</option>
-              <option value="earliest_date">Earliest Date</option>
-              <option value="lowest_price">Lowest Price</option>
-              <option value="highest_price">Highest Price</option>
-              <option value="biggest_capacity">Biggest Capacity</option>
-              <option value="smallest_capacity">Smallest Capacity</option>
-            </select>
-            <AiOutlineFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
+              <AiOutlineDelete className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </form>
