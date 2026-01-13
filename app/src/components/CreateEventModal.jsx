@@ -1,10 +1,8 @@
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 
-export default function CreateEventModal({ isOpen, onClose }) {
-  const navigate = useNavigate()
+export default function CreateEventModal({ isOpen, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
@@ -34,8 +32,7 @@ export default function CreateEventModal({ isOpen, onClose }) {
 
       toast.success("Event created! Add more details to publish it.")
       onClose()
-      // Redirect to edit page
-      navigate(`/event/${data._id}/edit`)
+      onSuccess()
     } catch (error) {
       toast.error(error.message || "Failed to create event")
       console.error(error)
