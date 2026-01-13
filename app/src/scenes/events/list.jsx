@@ -180,51 +180,8 @@ export default function ListView() {
           </div>
         </div>
       </form>
-      <div className="mb-6">
-      <div className="flex items-center gap-2 mt-4 flex-wrap">
-        <button 
-          onClick={() => setFilters({ ...filters, category: "" })} 
-          className={`px-3 py-1 rounded ${filters.category === "" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setFilters({ ...filters, category: "conference" })}
-          className={`px-3 py-1 rounded ${filters.category === "conference" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-        >
-          Conference
-        </button>
-        <button
-          onClick={() => setFilters({ ...filters, category: "workshop" })}
-          className={`px-3 py-1 rounded ${filters.category === "workshop" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-        >
-          Workshop
-        </button>
-        <button
-          onClick={() => setFilters({ ...filters, category: "seminar" })}
-          className={`px-3 py-1 rounded ${filters.category === "seminar" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-        >
-          Seminar
-        </button>
-        <button
-          onClick={() => setFilters({ ...filters, category: "networking" })}
-          className={`px-3 py-1 rounded ${filters.category === "networking" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-        >
-          Networking
-        </button>
-        <button
-          onClick={() => setFilters({ ...filters, category: "social" })}
-          className={`px-3 py-1 rounded ${filters.category === "social" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-        >
-          Social
-        </button>
-        <button
-          onClick={() => setFilters({ ...filters, category: "other" })}
-          className={`px-3 py-1 rounded ${filters.category === "other" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-        >
-          Other
-        </button>
-      </div>
+      <div className="text-sm text-gray-500 mb-4">
+        Upcoming events: {filteredEvents.length}
       </div>
 
       {/* Events List */}
