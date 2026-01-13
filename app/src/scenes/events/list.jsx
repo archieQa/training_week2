@@ -181,6 +181,9 @@ export default function ListView() {
           </div>
         </div>
       </form>
+      <div className="text-sm text-gray-500 mb-4">
+        Upcoming events: {filteredEvents.length}
+      </div>
 
       {/* Events List */}
       {filteredEvents.length === 0 ? (
