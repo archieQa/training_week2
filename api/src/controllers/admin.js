@@ -67,7 +67,6 @@ router.post("/signup", async (req, res) => {
 
     return res.status(200).send({ user, token, ok: true });
   } catch (error) {
-    console.log("e", error);
     if (error.code === 11000) return res.status(409).send({ ok: false, code: ERROR_CODES.USER_ALREADY_REGISTERED });
     capture(error);
     return res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
@@ -235,9 +234,6 @@ router.post("/", passport.authenticate("admin", { session: false }), async (req,
       emailTo: [{ email: obj.email }],
       params: { cta: `${config.ADMIN_URL}/auth/invitation?token=${token}` },
     });
-
-    console.log(`Admin invitation sent to ${obj.email}`);
-    console.log(`Invitation link: ${config.ADMIN_URL}/auth/invitation?token=${token}`);
 
     return res.status(200).send({ data: user, ok: true });
   } catch (error) {

@@ -23,7 +23,7 @@ export default () => {
       setUser(data);
       toast.success("Profile Updated successfully!");
     } catch (error) {
-      console.log(error);
+      // Error handling
     } finally {
       setBtnLoading(false);
     }
@@ -95,7 +95,7 @@ const ResetPassword = () => {
       setOpen(false);
       toast.success("Password updated successfully!");
     } catch (error) {
-      console.log(error);
+      // Error handling
     } finally {
       setBtnLoading(false);
     }

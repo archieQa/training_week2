@@ -60,11 +60,9 @@ class api {
 
   postFormData(path, file) {
     let formData = new FormData();
-    console.log("file", file);
     formData.append(file.name, file, file.name);
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(`${API_URL}${path}`);
         const response = await fetch(`${API_URL}${path}`, {
           mode: "cors",
           method: "POST",
@@ -75,7 +73,6 @@ class api {
         const res = await response.json();
         resolve(res);
       } catch (e) {
-        console.log("e", e);
         reject(e);
       }
     });
