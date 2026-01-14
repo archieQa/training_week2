@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
+import Loader from "@/components/loader"
 
 export default function ListView() {
   const [events, setEvents] = useState([])
@@ -42,16 +43,12 @@ export default function ListView() {
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-      </div>
+    <Loader />
     )
   }
 
   return (
     <div>
-      {/* Info card */}
       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-start">
           <div className="flex-shrink-0">
@@ -80,7 +77,6 @@ export default function ListView() {
         </div>
       </div>
 
-      {/* Search and Filters */}
       <div className="mb-6 bg-white p-4 rounded-lg shadow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -125,7 +121,6 @@ export default function ListView() {
         </button>
       </div>
 
-      {/* Events List */}
       {events.length === 0 ? (
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
