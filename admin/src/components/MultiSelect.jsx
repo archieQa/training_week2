@@ -81,12 +81,21 @@ function MultiSelect({ id, options, values, onSelectedChange = () => {}, placeho
                 />
               </div>
             </li>
-            {options
-              .filter((o) => {
+            {(() => {
+              const filteredOptions = options.filter((o) => {
                 if (!search) return true;
                 return o.label.toLowerCase().includes(search.toLowerCase());
-              })
-              .map((option) => {
+              });
+              
+              if (filteredOptions.length === 0 && search) {
+                return (
+                  <li className="px-4 py-3 text-sm text-gray-500 text-center">
+                    No results found
+                  </li>
+                );
+              }
+              
+              return filteredOptions.map((option) => {
                 const isSelected = selectedOptions.find((_option) => _option.value === option.value);
                 return (
                   <li key={option.value} onClick={() => handleOptionClick(option)} className="flex items-center gap-1 hover:bg-gray-100 text-sm px-2 py-1 cursor-pointer w-96">
@@ -94,7 +103,8 @@ function MultiSelect({ id, options, values, onSelectedChange = () => {}, placeho
                     <span className={`flex-1 ${isSelected ? "font-semibold" : "font-normal"}`}>{option.label}</span>
                   </li>
                 );
-              })}
+              });
+            })()}
           </ul>
         </div>
       )}
@@ -103,69 +113,3 @@ function MultiSelect({ id, options, values, onSelectedChange = () => {}, placeho
 }
 
 export default MultiSelect;
-
-// import React from "react";
-// import { IoClose } from "react-icons/io5";
-
-// const MultiSelect = ({
-//   values = [],
-//   onSearch,
-//   onChange,
-//   placeholder,
-//   options,
-//   renderOption = (item) => <div>{item}</div>,
-// }) => {
-//   const [search, setSearch] = React.useState("");
-
-//   React.useEffect(() => {
-//     onSearch(search);
-//   }, [search]);
-
-//   return (
-//     <div className="space-y-1 relative">
-//       <input
-//         className="rounded-xl p-1.5 px-4 border border-gray-300 bg-white placeholder:text-gray-300 !outline-none !ring-0"
-//         value={search}
-//         onChange={(e) => setSearch(e.target.value)}
-//         placeholder={placeholder}
-//       />
-//       {search ? (
-//         <div className="rounded bg-white divide-y divide-gray-200 border-[1px] border-gray-200 absolute z-20 top-full left-0 w-full max-h-80 overflow-y-auto">
-//           {(options || [])
-//             .filter((o) => !values.includes(o))
-//             .map((option) => (
-//               <div
-//                 key={option}
-//                 className="p-2 cursor-pointer hover:bg-gray-100"
-//                 onClick={() => {
-//                   onChange([...values, option]);
-//                   setSearch("");
-//                 }}
-//               >
-//                 {renderOption(option)}
-//               </div>
-//             ))}
-//         </div>
-//       ) : (
-//         <div className="flex gap-1 items-center">
-//           {values.map((value) => (
-//             <div
-//               key={value}
-//               className="flex gap-1 pl-1 bg-primary-100 text-primary-600"
-//             >
-//               {value}
-//               <div
-//                 className="flex items-center justify-center bg-primary-100 text-primary-600 hover:bg-red-100 hover:text-red-600 px-2 cursor-pointer"
-//                 onClick={() => onChange(values.filter((v) => v !== value))}
-//               >
-//                 <IoClose />
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default MultiSelect;
