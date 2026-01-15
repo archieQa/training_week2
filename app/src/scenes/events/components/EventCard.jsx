@@ -37,13 +37,15 @@ export default function EventCard({
     return (
       <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
         <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <h3 className="text-xl font-semibold text-gray-900">{event.title}</h3>
-              {getStatusBadge && getStatusBadge(event.status)}
-              <span className="text-sm px-2 py-1 bg-indigo-100 text-indigo-800 rounded">
-                {event.category}
-              </span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start gap-3 mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 line-clamp-2 flex-1 min-w-0">{event.title}</h3>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {getStatusBadge && getStatusBadge(event.status)}
+                <span className="text-sm px-2 py-1 bg-indigo-100 text-indigo-800 rounded">
+                  {event.category}
+                </span>
+              </div>
             </div>
 
             <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
