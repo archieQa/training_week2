@@ -267,7 +267,7 @@ export default function EventCard({
                 </span>
               </div>
               <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-indigo-600 h-3 rounded-full" style={{ width: `${((event.capacity - event.available_spots ) / event.capacity) * 100}%`  }}></div> 
+                <div className="bg-indigo-600 h-3 rounded-full" style={{ width: `${event.capacity > 0 ? ((event.capacity - event.available_spots ) / event.capacity) * 100 : 0}%`  }}></div> 
               </div>
             </div>
           )}
