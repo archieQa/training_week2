@@ -30,15 +30,18 @@ export default function MyEvents() {
   const fetchEvents = useCallback(async () => {
     try {
       setLoading(true)
-      const { ok, data } = await api.post("/event/my-events/search", { per_page: 50, page: 1 })
+      const { ok, data, message } = await api.post("/event/my-events/search", { per_page: 50, page: 1 })
       
       if (!ok) {
-        throw new Error("Failed to fetch events")
+        const errorMsg = message || data?.message || "Server returned an error while fetching your events"
+        throw new Error(errorMsg)
       }
       
       setAllEvents(data || [])
     } catch (error) {
-      toast.error("Could not load your events")
+      const errorMessage = error.message || error.code || "Unable to load your events. Please check your connection and try again."
+      toast.error(`Failed to load your events: ${errorMessage}`)
+      console.error("Error fetching user events:", error)
     } finally {
       setLoading(false)
     }
@@ -57,14 +60,19 @@ export default function MyEvents() {
 
   const handleDuplicate = async eventId => {
     try {
-      const { ok, data } = await api.post(`/event/duplicate/${eventId}`)
-      if (!ok) throw new Error("Failed to duplicate event")
+      const { ok, data, message } = await api.post(`/event/duplicate/${eventId}`)
+      if (!ok) {
+        const errorMsg = message || data?.message || "Server returned an error while duplicating the event"
+        throw new Error(errorMsg)
+      }
       
       toast.success("Event duplicated successfully")
       navigate(`/event/${data._id}/edit`)
       fetchEvents()
     } catch (error) {
-      toast.error("Failed to duplicate event")
+      const errorMessage = error.message || error.code || "Unable to duplicate event. Please try again."
+      toast.error(`Failed to duplicate event: ${errorMessage}`)
+      console.error("Error duplicating event:", error)
     }
   }
 
@@ -74,13 +82,18 @@ export default function MyEvents() {
     }
 
     try {
-      const { ok } = await api.delete(`/event/${eventId}`)
-      if (!ok) throw new Error("Failed to delete event")
+      const { ok, message } = await api.delete(`/event/${eventId}`)
+      if (!ok) {
+        const errorMsg = message || "Server returned an error while deleting the event"
+        throw new Error(errorMsg)
+      }
       
       toast.success("Event deleted successfully")
       setAllEvents(prev => prev.filter(event => event._id !== eventId))
     } catch (error) {
-      toast.error("Failed to delete event")
+      const errorMessage = error.message || error.code || "Unable to delete event. Please try again."
+      toast.error(`Failed to delete event: ${errorMessage}`)
+      console.error("Error deleting event:", error)
     }
   }
 
