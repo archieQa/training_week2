@@ -16,12 +16,21 @@ export default () => {
   const send = async () => {
     try {
       const { token } = queryString.parse(location.search)
+      if (!token) {
+        toast.error("Invalid or missing reset token. Please request a new password reset link.")
+        return
+      }
       const res = await api.post("/user/forgot_password_reset", { ...values, token })
-      if (!res.ok) throw res
-      toast.success("Success!")
+      if (!res.ok) {
+        const errorMsg = res.message || res.data?.message || res.code || "Server returned an error while resetting your password"
+        throw new Error(errorMsg)
+      }
+      toast.success("Password reset successfully! You can now sign in with your new password.")
       navigate("/")
     } catch (e) {
-      toast.error(`Error\n${e && e.code}`)
+      const errorMessage = e.message || e.code || "Unable to reset password. The link may have expired. Please request a new password reset."
+      toast.error(`Failed to reset password: ${errorMessage}`)
+      console.error("Error resetting password:", e)
     }
   }
 

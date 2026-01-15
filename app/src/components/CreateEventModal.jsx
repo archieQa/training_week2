@@ -24,18 +24,22 @@ export default function CreateEventModal({ isOpen, onClose, onSuccess }) {
 
     try {
       setLoading(true)
-      const { ok, data } = await api.post("/event", {
+      const { ok, data, message } = await api.post("/event", {
         ...formData,
         status: "draft" // Always create as draft
       })
-      if (!ok) throw new Error("Failed to create event")
+      if (!ok) {
+        const errorMsg = message || data?.message || "Server returned an error while creating the event"
+        throw new Error(errorMsg)
+      }
 
       toast.success("Event created! Add more details to publish it.")
       onClose()
       onSuccess()
     } catch (error) {
-      toast.error(error.message || "Failed to create event")
-      console.error(error)
+      const errorMessage = error.message || error.code || "Unable to create event. Please check your connection and try again."
+      toast.error(`Failed to create event: ${errorMessage}`)
+      console.error("Error creating event:", error)
     } finally {
       setLoading(false)
     }

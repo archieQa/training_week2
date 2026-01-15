@@ -35,13 +35,17 @@ export default function Account() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { ok, data } = await api.put("/user", values)
-      if (!ok) throw new Error()
+      const { ok, data, message } = await api.put("/user", values)
+      if (!ok) {
+        const errorMsg = message || data?.message || "Server returned an error while updating your profile"
+        throw new Error(errorMsg)
+      }
       setUser(data)
       toast.success("Profil mis à jour avec succès !")
     } catch (e) {
-      console.error(e)
-      toast.error("Erreur lors de la mise à jour du profil")
+      const errorMessage = e.message || e.code || "Unable to update profile. Please check your connection and try again."
+      console.error("Error updating profile:", e)
+      toast.error(`Erreur lors de la mise à jour du profil: ${errorMessage}`)
     } finally {
       setLoading(false)
     }
@@ -134,13 +138,17 @@ function PasswordSection() {
     }
     setLoading(true)
     try {
-      const { ok } = await api.post("/user/reset_password", values)
-      if (!ok) throw new Error()
+      const { ok, message } = await api.post("/user/reset_password", values)
+      if (!ok) {
+        const errorMsg = message || "Server returned an error while updating your password"
+        throw new Error(errorMsg)
+      }
       toast.success("Mot de passe mis à jour avec succès !")
       setValues({ password: "", newPassword: "", verifyPassword: "" })
     } catch (e) {
-      console.error(e)
-      toast.error("Erreur lors de la mise à jour du mot de passe")
+      const errorMessage = e.message || e.code || "Unable to update password. Please check your current password and try again."
+      console.error("Error updating password:", e)
+      toast.error(`Erreur lors de la mise à jour du mot de passe: ${errorMessage}`)
     } finally {
       setLoading(false)
     }

@@ -31,11 +31,16 @@ export default function EventView() {
 
   const fetchEvent = async () => {
     try {
-      const { ok, data } = await api.get(`/event/${id}`)
-      if (!ok) throw new Error("Failed to fetch event")
+      const { ok, data, message } = await api.get(`/event/${id}`)
+      if (!ok) {
+        const errorMsg = message || data?.message || "Server returned an error while fetching the event"
+        throw new Error(errorMsg)
+      }
       setEvent(data)
     } catch (error) {
-      toast.error("Could not load event")
+      const errorMessage = error.message || error.code || "Unable to load event. The event may not exist or you may not have permission to view it."
+      toast.error(`Failed to load event: ${errorMessage}`)
+      console.error("Error fetching event:", error)
       navigate("/")
     } finally {
       setLoading(false)

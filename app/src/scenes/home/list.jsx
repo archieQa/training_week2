@@ -24,10 +24,15 @@ export default function ListView() {
         page: 1
       })
 
-      if (!ok) throw new Error("Failed to fetch events")
+      if (!ok) {
+        const errorMsg = message || data?.message || "Server returned an error while fetching events"
+        throw new Error(errorMsg)
+      }
       setEvents(data || [])
     } catch (error) {
-      toast.error("Could not load events")
+      const errorMessage = error.message || error.code || "Unable to load events. Please check your connection and try again."
+      toast.error(`Failed to load events: ${errorMessage}`)
+      console.error("Error fetching events:", error)
     } finally {
       setLoading(false)
     }

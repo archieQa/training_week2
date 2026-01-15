@@ -63,15 +63,19 @@ export default function EditTab({ event, fetchEvent }) {
 
     try {
       setSaving(true)
-      const { ok } = await api.put(`/event/${id}`, formData)
-      if (!ok) throw new Error("Failed to update event")
+      const { ok, message } = await api.put(`/event/${id}`, formData)
+      if (!ok) {
+        const errorMsg = message || "Server returned an error while updating the event"
+        throw new Error(errorMsg)
+      }
 
       toast.success("Event updated successfully!")
       await fetchEvent() // Refresh the parent event data
       navigate(`/event/${id}`) // Navigate back to overview tab
     } catch (error) {
-      toast.error(error.message || "Failed to update event")
-      console.error(error)
+      const errorMessage = error.message || error.code || "Unable to update event. Please check your connection and try again."
+      toast.error(`Failed to update event: ${errorMessage}`)
+      console.error("Error updating event:", error)
     } finally {
       setSaving(false)
     }
@@ -86,15 +90,19 @@ export default function EditTab({ event, fetchEvent }) {
     
     try {
       setSaving(true)
-      const { ok } = await api.put(`/event/${id}`, { ...formData, status: "published" })
-      if (!ok) throw new Error("Failed to publish event")
+      const { ok, message } = await api.put(`/event/${id}`, { ...formData, status: "published" })
+      if (!ok) {
+        const errorMsg = message || "Server returned an error while publishing the event"
+        throw new Error(errorMsg)
+      }
 
       toast.success("Event published successfully! 🎉")
       await fetchEvent() // Refresh the parent event data
       navigate(`/event/${id}`) // Navigate back to overview tab
     } catch (error) {
-      toast.error(error.message || "Failed to publish event")
-      console.error(error)
+      const errorMessage = error.message || error.code || "Unable to publish event. Please check your connection and try again."
+      toast.error(`Failed to publish event: ${errorMessage}`)
+      console.error("Error publishing event:", error)
     } finally {
       setSaving(false)
     }
