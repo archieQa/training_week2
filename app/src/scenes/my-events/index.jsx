@@ -6,7 +6,8 @@ import api from "@/services/api"
 import toast from "react-hot-toast"
 import CreateEventModal from "@/components/CreateEventModal"
 import Loader from "@/components/loader"
-import EventCard from "@/scenes/events/components/EventCard"  
+import EventCard from "@/scenes/events/components/EventCard"
+import { formatDateTimeLocal } from "@/utils"  
 
 const FILTER_OPTIONS = [
   { value: "all", label: "All" },
@@ -85,10 +86,11 @@ export default function MyEvents() {
   }
 
   const formatDate = date => {
-    return new Date(date).toLocaleDateString("en-US", {
+    return formatDateTimeLocal(date, {
       year: "numeric",
       month: "short",
-      day: "numeric",
+      day: "numeric"
+    }, {
       hour: "2-digit",
       minute: "2-digit"
     })

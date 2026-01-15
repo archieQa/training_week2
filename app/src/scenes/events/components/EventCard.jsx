@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineCopy } from "react-icons/ai"
 import { Menu } from "@headlessui/react"
+import { formatDateLocal, formatTimeLocal } from "@/utils"
 
 export default function EventCard({
   event,
@@ -16,7 +17,7 @@ export default function EventCard({
   const hasMenuActions = !!onView
 
   const defaultFormatDate = date => {
-    return new Date(date).toLocaleDateString("en-US", {
+    return formatDateLocal(date, {
       weekday: "short",
       year: "numeric",
       month: "short",
@@ -25,7 +26,7 @@ export default function EventCard({
   }
 
   const formatTime = date => {
-    return new Date(date).toLocaleTimeString("en-US", {
+    return formatTimeLocal(date, {
       hour: "2-digit",
       minute: "2-digit"
     })
