@@ -25,10 +25,8 @@ export default () => {
 
   if (done) {
     return (
-      // Auth Wrapper
       <div className="authWrapper font-myfont">
         <div className="font-[Helvetica] text-center text-[32px] font-semibold	mb-[15px]">Reset Password</div>
-        {/* How Reset */}
         <div className="text-[16px] text-center mb-[30px] py-0	px-[30px] text-[#555]">
           Password recovery link has been sent to your email please check you inbox and follow the link to reset your password.
         </div>
@@ -37,10 +35,8 @@ export default () => {
   }
 
   return (
-    // Auth Wrapper
     <div className="authWrapper font-myfont">
       <div className="font-[Helvetica] text-center text-[32px] font-semibold	mb-[15px]">Reset Password</div>
-      {/* How Reset */}
       <div className="text-[16px] text-center mb-[30px] py-0	px-[30px] text-[#555]">Enter your email address below to receive the password reset link.</div>
       <div>
         <div>

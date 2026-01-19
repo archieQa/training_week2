@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter, AiOutlineDelete } from "react-icons/ai"
+import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter, AiOutlineDelete, AiOutlineInfoCircle } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 import EventCard from "@/scenes/events/components/EventCard"
+import Loader from "@/components/loader"
 
 export default function ListView() {
   const [events, setEvents] = useState([])
@@ -21,7 +22,7 @@ export default function ListView() {
   }, [])
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => { fetchEvents() }, 200) 
+    const timeoutId = setTimeout(() => { fetchEvents() }, 300) 
     return () => clearTimeout(timeoutId)
   }, [filters])
 
@@ -50,6 +51,35 @@ export default function ListView() {
   const handleSearch = e => {
     e.preventDefault()
     fetchEvents()
+
+  const applySort = () => {
+    let sorted = [...allEvents]
+
+    switch (sortBy) {
+      case "latest_date":
+        sorted.sort((a, b) => new Date(b.start_date) - new Date(a.start_date))
+        break
+      case "earliest_date":
+        sorted.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+        break
+      case "lowest_price":
+        sorted.sort((a, b) => a.price - b.price)
+        break
+      case "highest_price":
+        sorted.sort((a, b) => b.price - a.price)
+        break
+      case "biggest_capacity":
+        sorted.sort((a, b) => b.capacity - a.capacity)
+        break
+      case "smallest_capacity":
+        sorted.sort((a, b) => a.capacity - b.capacity)
+        break
+      default:
+
+        break
+    }
+
+    setFilteredEvents(sorted)
   }
 
   const clearFilters = () => {
@@ -92,26 +122,16 @@ export default function ListView() {
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-      </div>
+      <Loader />
     )
   }
 
   return (
     <div>
-      {/* Info card */}
       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-start">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <AiOutlineInfoCircle className="h-5 w-5 text-blue-400" />
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-blue-800">Public Event Search</h3>
@@ -130,8 +150,6 @@ export default function ListView() {
         </div>
       </div>
 
-      {/* Search and Filters */}
-      <form onSubmit={handleSearch} className="mb-6 bg-white p-4 rounded-lg shadow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
@@ -192,6 +210,12 @@ export default function ListView() {
 
       {/* Events List */}
       {events.length === 0 ? (
+
+      <div className="text-sm text-gray-500 mb-4 pt-4">
+        Upcoming events: {filteredEvents.length} !!!!!
+      </div> 
+      
+      {filteredEvents.length === 0 ? (
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
             <AiOutlineCalendar className="w-8 h-8 text-gray-400" />

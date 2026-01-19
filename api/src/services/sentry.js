@@ -13,8 +13,6 @@ function initSentry(app) {
 
     app.use(Sentry.Handlers.requestHandler());
     app.use(Sentry.Handlers.tracingHandler());
-
-    console.log("Sentry initialized");
   }
 }
 
@@ -25,7 +23,6 @@ function setupErrorHandler(app) {
 }
 
 function capture(err) {
-  console.log("capture", err);
   if (Sentry && err) {
     Sentry.captureException(err);
   }

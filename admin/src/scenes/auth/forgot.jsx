@@ -20,7 +20,7 @@ export default () => {
       toast.success("Sent");
       setDone(true);
     } catch (e) {
-      console.log(e);
+      // Error handling
     } finally {
       setBtnLoading(false);
     }
