@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { AiOutlineInfoCircle } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
+import FileInput from "@/components/file-input"
 
 export default function EditTab({ event, fetchEvent }) {
   const { id } = useParams()
@@ -21,7 +22,8 @@ export default function EditTab({ event, fetchEvent }) {
     price: 0,
     currency: "EUR",
     category: "other",
-    status: "draft"
+    status: "draft",
+    image_url: ""
   })
 
   useEffect(() => {
@@ -39,7 +41,8 @@ export default function EditTab({ event, fetchEvent }) {
         price: event.price || 0,
         currency: event.currency || "EUR",
         category: event.category || "other",
-        status: event.status || "draft"
+        status: event.status || "draft",
+        image_url: event.image_url || ""
       })
     }
   }, [event])
@@ -204,6 +207,16 @@ export default function EditTab({ event, fetchEvent }) {
                 <option value="social">Social</option>
                 <option value="other">Other</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Event Image</label>
+              <FileInput
+                value={formData.image_url}
+                name="image_url"
+                folder="events"
+                onChange={e => setFormData({ ...formData, image_url: e.target.value })}
+              />
             </div>
           </div>
         </div>

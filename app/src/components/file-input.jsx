@@ -30,20 +30,31 @@ const FileInput = ({ value, onChange, name, folder }) => {
   const handleFileChange = async e => {
     setLoading(true)
 
-    const files = []
+    try {
+      const files = []
 
-    const f = e.target.files
+      const f = e.target.files
 
-    for (let i = 0; i < f.length; i++) {
-      const file = f[i]
-      const rawBody = await readFileAsync(file)
-      files.push({ rawBody, name: file.name })
+      for (let i = 0; i < f.length; i++) {
+        const file = f[i]
+        const rawBody = await readFileAsync(file)
+        files.push({ rawBody, name: file.name })
+      }
+
+      const { data, ok, message } = await api.post(`/file`, { files, folder })
+
+      if (!ok) {
+        console.error("File upload failed:", message)
+        setLoading(false)
+        return
+      }
+      const imageUrl = Array.isArray(data) && data.length > 0 ? data[0] : data
+      onChange({ target: { value: imageUrl, name } })
+    } catch (error) {
+      console.error("File upload error:", error)
+    } finally {
+      setLoading(false)
     }
-
-    const { data } = await api.post(`/file`, { files, folder })
-
-    onChange({ target: { value: data } })
-    setLoading(false)
   }
 
   return (
