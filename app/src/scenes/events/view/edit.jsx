@@ -63,8 +63,13 @@ export default function EditTab({ event, fetchEvent }) {
 
     try {
       setSaving(true)
-      const { ok } = await api.put(`/event/${id}`, formData)
-      if (!ok) throw new Error("Failed to update event")
+      const { ok, code } = await api.put(`/event/${id}`, formData)
+      if (!ok) {
+        if (code === "END_DATE_MUST_BE_AFTER_START_DATE") {
+          throw new Error("End date must be after start date")
+        }
+        throw new Error("Failed to update event")
+      }
 
       toast.success("Event updated successfully!")
       await fetchEvent() 
@@ -85,8 +90,13 @@ export default function EditTab({ event, fetchEvent }) {
     
     try {
       setSaving(true)
-      const { ok } = await api.put(`/event/${id}`, { ...formData, status: "published" })
-      if (!ok) throw new Error("Failed to publish event")
+      const { ok, code } = await api.put(`/event/${id}`, { ...formData, status: "published" })
+      if (!ok) {
+        if (code === "END_DATE_MUST_BE_AFTER_START_DATE") {
+          throw new Error("End date must be after start date")
+        }
+        throw new Error("Failed to publish event")
+      }
 
       toast.success("Event published successfully! 🎉")
       await fetchEvent() 
@@ -205,6 +215,7 @@ export default function EditTab({ event, fetchEvent }) {
                 required
                 value={formData.start_date}
                 onChange={handleChange}
+                min={new Date().toISOString().slice(0, 16)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -216,6 +227,7 @@ export default function EditTab({ event, fetchEvent }) {
                 name="end_date"
                 value={formData.end_date}
                 onChange={handleChange}
+                min={formData.start_date || new Date().toISOString().slice(0, 16)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>

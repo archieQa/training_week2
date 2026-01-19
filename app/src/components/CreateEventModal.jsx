@@ -24,11 +24,16 @@ export default function CreateEventModal({ isOpen, onClose, onSuccess }) {
 
     try {
       setLoading(true)
-      const { ok, data } = await api.post("/event", {
+      const { ok, code, data } = await api.post("/event", {
         ...formData,
         status: "draft" // Always create as draft
       })
-      if (!ok) throw new Error("Failed to create event")
+      if (!ok) {
+        if (code === "END_DATE_MUST_BE_AFTER_START_DATE") {
+          throw new Error("End date must be after start date")
+        }
+        throw new Error("Failed to create event")
+      }
 
       toast.success("Event created! Add more details to publish it.")
       onClose()
@@ -88,6 +93,7 @@ export default function CreateEventModal({ isOpen, onClose, onSuccess }) {
                         required
                         value={formData.start_date}
                         onChange={handleChange}
+                        min={new Date().toISOString().slice(0, 16)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>

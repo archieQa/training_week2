@@ -170,6 +170,11 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
       return res.status(400).send({ ok: false, code: "TITLE_AND_START_DATE_REQUIRED" });
     }
 
+    // 📚 Validation: End date must be after start date
+    if (end_date && new Date(end_date) <= new Date(start_date)) {
+      return res.status(400).send({ ok: false, code: ERROR_CODES.END_DATE_MUST_BE_AFTER_START_DATE });
+    }
+
     // 📚 Security: Set organizer from authenticated user
     // NEVER trust organizer_id from request body - users could impersonate others!
     // Always use req.user._id (set by passport middleware)
@@ -292,6 +297,15 @@ router.put("/:id", passport.authenticate(["user", "admin"], { session: false }),
     }
 
     const updates = req.body;
+
+    // 📚 Validation: End date must be after start date
+    // Check both the new values and existing event values
+    const finalStartDate = updates.start_date || event.start_date;
+    const finalEndDate = updates.end_date !== undefined ? updates.end_date : event.end_date;
+    
+    if (finalEndDate && new Date(finalEndDate) <= new Date(finalStartDate)) {
+      return res.status(400).send({ ok: false, code: ERROR_CODES.END_DATE_MUST_BE_AFTER_START_DATE });
+    }
 
     // 📚 Business logic: Recalculate available spots when capacity changes
     // If event had 100 capacity, 30 booked (70 available)
