@@ -30,7 +30,8 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
   const [registering, setRegistering] = useState(false)
 
   const defaultFormatDate = date => {
-    return formatDateLocal(date, {
+    if (!date) return ""
+    return new Date(date).toLocaleDateString("en-US", {
       weekday: "short",
       year: "numeric",
       month: "short",
@@ -39,7 +40,8 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
   }
 
   const formatTime = date => {
-    return formatTimeLocal(date, {
+    if (!date) return ""
+    return new Date(date).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit"
     })

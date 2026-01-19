@@ -67,16 +67,13 @@ export default function EditTab({ event, fetchEvent }) {
 
     try {
       setSaving(true)
-      const { ok, message } = await api.put(`/event/${id}`, formData)
-      if (!ok) {
-        const errorMsg = message || "Server returned an error while updating the event"
-        throw new Error(errorMsg)
       const { ok, code } = await api.put(`/event/${id}`, formData)
       if (!ok) {
         if (code === "END_DATE_MUST_BE_AFTER_START_DATE") {
           throw new Error("End date must be after start date")
         }
-        throw new Error("Failed to update event")
+        const errorMsg = "Server returned an error while updating the event"
+        throw new Error(errorMsg)
       }
 
       toast.success("Event updated successfully!")
@@ -100,16 +97,13 @@ export default function EditTab({ event, fetchEvent }) {
     
     try {
       setSaving(true)
-      const { ok, message } = await api.put(`/event/${id}`, { ...formData, status: "published" })
-      if (!ok) {
-        const errorMsg = message || "Server returned an error while publishing the event"
-        throw new Error(errorMsg)
       const { ok, code } = await api.put(`/event/${id}`, { ...formData, status: "published" })
       if (!ok) {
         if (code === "END_DATE_MUST_BE_AFTER_START_DATE") {
           throw new Error("End date must be after start date")
         }
-        throw new Error("Failed to publish event")
+        const errorMsg = "Server returned an error while publishing the event"
+        throw new Error(errorMsg)
       }
 
       toast.success("Event published successfully! 🎉")

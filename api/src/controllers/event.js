@@ -212,7 +212,6 @@ router.delete("/:id", passport.authenticate(["user", "admin"], { session: false 
     const event = await EventObject.findById(req.params.id);
     if (!event) return res.status(404).send({ ok: false, code: ERROR_CODES.NOT_FOUND });
 
-
     await EventObject.findByIdAndDelete(req.params.id);
 
     res.status(200).send({ ok: true });
@@ -227,7 +226,6 @@ router.post("/duplicate/:id", passport.authenticate("user", { session: false }),
   try {
     const originalEvent = await EventObject.findById(req.params.id);
     if (!originalEvent) return res.status(404).send({ ok: false, code: ERROR_CODES.NOT_FOUND });
-
 
     const isOwner = originalEvent.organizer_id.toString() === req.user._id.toString();
     const isAdmin = req.user.role === "admin";

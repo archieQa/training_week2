@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { AiOutlineCalendar, AiOutlineFilter, AiOutlineDelete } from "react-icons/ai"
-import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter, AiOutlineDelete, AiOutlineInfoCircle } from "react-icons/ai"
+import { Link } from "react-router-dom"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 import EventCard from "@/scenes/events/components/EventCard"
@@ -16,8 +15,6 @@ export default function ListView() {
   const [loading, setLoading] = useState(true)
   const [searchLoading, setSearchLoading] = useState(false)
   const [clearFiltersLoading, setClearFiltersLoading] = useState(false)
-  const [filters, setFilters] = useState({ search: "", category: "", city: "" })
-  const [sortBy, setSortBy] = useState("")
   const [filters, setFilters] = useState({ 
     search: "", 
     category: "", 
@@ -25,6 +22,7 @@ export default function ListView() {
     sort: "",
     direction: ""
   })
+  const [sortBy, setSortBy] = useState("")
 
   useEffect(() => {
     fetchEvents(true)
@@ -46,15 +44,6 @@ export default function ListView() {
       } else {
         setSearchLoading(true)
       }
-      const { ok, data } = await api.post("/event/search", {
-    const timeoutId = setTimeout(() => { fetchEvents() }, 300) 
-    return () => clearTimeout(timeoutId)
-  }, [filters])
-
-  const fetchEvents = async () => {
-    try {
-      setLoading(true)
-      const { ok, data, message } = await api.post("/event/search", {
       const { ok, data, total } = await api.post("/event/search", {
         search: filters.search,
         category: filters.category,
@@ -66,7 +55,7 @@ export default function ListView() {
       })
 
       if (!ok) {
-        const errorMsg = message || data?.message || "Failed to fetch events from server"
+        const errorMsg = data?.message || "Failed to fetch events from server"
         throw new Error(errorMsg)
       }
       setAllEvents(data || [])
@@ -81,10 +70,6 @@ export default function ListView() {
       setSearchLoading(false)
     }
   }
-
-  const handleSearch = e => {
-    e.preventDefault()
-    fetchEvents()
 
   const applySort = () => {
     let sorted = [...allEvents]
@@ -122,12 +107,10 @@ export default function ListView() {
 
   const clearFilters = async () => {
     setClearFiltersLoading(true)
-    setFilters({ search: "", category: "", city: "" })
+    setFilters({ search: "", category: "", city: "", sort: "", direction: "" })
     setSortBy("")
     await new Promise(resolve => setTimeout(resolve, 100))
     setClearFiltersLoading(false)
-  const clearFilters = () => {
-    setFilters({ search: "", category: "", city: "", sort: "", direction: "" })
   }
 
   const handleSortChange = (e) => {
@@ -219,16 +202,6 @@ export default function ListView() {
                 onChange={e => setFilters({ ...filters, city: e.target.value })}
               />
             </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-            <input
-              type="text"
-              placeholder="Event title, venue, or description..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={filters.search}
-              onChange={e => setFilters({ ...filters, search: e.target.value })}
-            />
           </div>
         </form>
 
@@ -325,22 +298,10 @@ export default function ListView() {
           </div>
         </div>
         <div className="flex items-center justify-between gap-4 mt-4">
-          <LoadingButton 
-            type="submit" 
-            loading={searchLoading}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            Search Events
-          </LoadingButton>
-          <div className="flex items-center gap-2">
-
           <div className="flex items-center gap-3">
             <div className="relative">
               <select
                 className="px-4 py-2 pl-10 pr-8 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer transition-colors"
-                value={sortBy}
-                onChange={e => setSortBy(e.target.value)}
-                className="px-4 py-2 pl-10 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
                 value={getSortOptionValue()}
                 onChange={handleSortChange}
               >
@@ -358,8 +319,6 @@ export default function ListView() {
               type="button"
               onClick={clearFilters}
               loading={clearFiltersLoading}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              title="Remove all filters"
               className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
               title="Clear all filters"
             >
@@ -370,16 +329,9 @@ export default function ListView() {
       </div>
       <div className="text-sm text-gray-500 mb-4">
         Upcoming events: {total}
-        Upcoming events: {events.length}
       </div>
 
       {/* Events List */}
-      {events.length === 0 ? (
-
-      <div className="text-sm text-gray-500 mb-4 pt-4">
-        Upcoming events: {filteredEvents.length} !!!!!
-      </div> 
-      
       {filteredEvents.length === 0 ? (
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
@@ -395,7 +347,7 @@ export default function ListView() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map(event => (
+          {filteredEvents.map(event => (
             <EventCard key={event._id} event={event} />
           ))}
         </div>
