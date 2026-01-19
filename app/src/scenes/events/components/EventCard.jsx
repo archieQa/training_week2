@@ -1,7 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineCopy } from "react-icons/ai"
 import { Menu } from "@headlessui/react"
+import Modal from "@/components/modal"
+import api from "@/services/api"
+import toast from "react-hot-toast"
+import useStore from "@/services/store"
 
 export default function EventCard({
   event,
@@ -14,6 +18,11 @@ export default function EventCard({
   getStatusBadge
 }) {
   const hasMenuActions = !!onView
+  const { user } = useStore()
+  const [showRegisterModal, setShowRegisterModal] = useState(false)
+  const [registerName, setRegisterName] = useState(user?.name || "")
+  const [registerEmail, setRegisterEmail] = useState(user?.email || "")
+  const [registering, setRegistering] = useState(false)
 
   const defaultFormatDate = date => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -32,6 +41,58 @@ export default function EventCard({
   }
 
   const dateFormatter = formatDate || defaultFormatDate
+
+  const handleRegister = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!registerName.trim() || !registerEmail.trim()) {
+      toast.error("Please provide both name and email")
+      return
+    }
+
+    setRegistering(true)
+    try {
+      const { ok, data, code } = await api.post("/attendee/register", {
+        event_id: event._id,
+        name: registerName.trim(),
+        email: registerEmail.trim(),
+      })
+
+      if (!ok) {
+        const errorMessages = {
+          ALREADY_REGISTERED: "You are already registered for this event",
+          EVENT_FULL: "This event is full",
+          EVENT_NOT_AVAILABLE: "This event is not available for registration",
+          EVENT_ALREADY_STARTED: "This event has already started",
+          REGISTRATION_CLOSED: "Registration deadline has passed",
+        }
+        toast.error(errorMessages[code] || "Failed to register for event")
+        return
+      }
+
+      toast.success("Successfully registered! Check your email for confirmation.")
+      setShowRegisterModal(false)
+      setRegisterName(user?.name || "")
+      setRegisterEmail(user?.email || "")
+    } catch (error) {
+      toast.error("Failed to register for event")
+    } finally {
+      setRegistering(false)
+    }
+  }
+
+  const openRegisterModal = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!user) {
+      toast.error("Please sign in to register for events")
+      return
+    }
+    setRegisterName(user.name || "")
+    setRegisterEmail(user.email || "")
+    setShowRegisterModal(true)
+  }
 
   if (hasMenuActions) {
     return (
@@ -211,68 +272,134 @@ export default function EventCard({
   }
 
   return (
-    <Link to={`/event/${event._id}`} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200 overflow-hidden block">
-      {event.image_url && <img src={event.image_url} alt={event.title} className="w-full h-48 object-cover" />}
-      <div className="p-4">
-        <div className="flex items-start justify-between mb-2">
-          <span className="inline-block px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded">{event.category}</span>
-          {event.capacity > 0 && event.available_spots === 0 ? ( 
-            <span className="inline-block px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded">Sold out</span>
-          ) : event.capacity > 0 ? (
-            <span className="inline-block px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded">Available spots: {event.available_spots}</span>
-          ): null }
-          {event.price > 0 ? (
-            <span className="text-sm font-bold text-gray-900">
-              {event.price} {event.currency}
-            </span>
-          ) : (
-            <span className="text-sm font-bold text-green-600">FREE</span>
-          )}
-        </div>
-
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{event.title}</h3>
-
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{event.description}</p>
-
-        <div className="space-y-2 text-sm text-gray-600">
-          <div className="flex items-center">
-            <AiOutlineCalendar className="w-4 h-4 mr-2" />
-            <span>
-              {dateFormatter(event.start_date)} at {formatTime(event.start_date)}
-            </span>
+    <>
+      <Link to={`/event/${event._id}`} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200 overflow-hidden block">
+        {event.image_url && <img src={event.image_url} alt={event.title} className="w-full h-48 object-cover" />}
+        <div className="p-4">
+          <div className="flex items-start justify-between mb-2">
+            <span className="inline-block px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded">{event.category}</span>
+            {event.capacity > 0 && event.available_spots === 0 ? ( 
+              <span className="inline-block px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded">Sold out</span>
+            ) : event.capacity > 0 ? (
+              <span className="inline-block px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded">Available spots: {event.available_spots}</span>
+            ): null }
+            {event.price > 0 ? (
+              <span className="text-sm font-bold text-gray-900">
+                {event.price} {event.currency}
+              </span>
+            ) : (
+              <span className="text-sm font-bold text-green-600">FREE</span>
+            )}
           </div>
 
-          {event.venue && (
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{event.title}</h3>
+
+          <p className="text-sm text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+
+          <div className="space-y-2 text-sm text-gray-600">
             <div className="flex items-center">
-              <AiOutlineEnvironment className="w-4 h-4 mr-2" />
-              <span className="line-clamp-1">
-                {event.venue}, {event.city}
+              <AiOutlineCalendar className="w-4 h-4 mr-2" />
+              <span>
+                {dateFormatter(event.start_date)} at {formatTime(event.start_date)}
               </span>
             </div>
-          )}
 
-          {event.organizer_name && (
-            <div className="flex items-center">
-              <AiOutlineUser className="w-4 h-4 mr-2" />
-              <span className="line-clamp-1">By {event.organizer_name}</span>
-            </div>
-          )}
-
-          {event.capacity > 0 && (
-            <div className="mt-2 pt-2 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">Available spots</span>
-                <span className="text-xs font-semibold text-gray-900">
-                  {event.capacity - event.available_spots} / {event.capacity}
+            {event.venue && (
+              <div className="flex items-center">
+                <AiOutlineEnvironment className="w-4 h-4 mr-2" />
+                <span className="line-clamp-1">
+                  {event.venue}, {event.city}
                 </span>
               </div>
-              <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-indigo-600 h-3 rounded-full" style={{ width: `${((event.capacity - event.available_spots ) / event.capacity) * 100}%`  }}></div> 
+            )}
+
+            {event.organizer_name && (
+              <div className="flex items-center">
+                <AiOutlineUser className="w-4 h-4 mr-2" />
+                <span className="line-clamp-1">By {event.organizer_name}</span>
               </div>
-            </div>
+            )}
+
+            {event.capacity > 0 && (
+              <div className="mt-2 pt-2 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Available spots</span>
+                  <span className="text-xs font-semibold text-gray-900">
+                    {event.capacity - event.available_spots} / {event.capacity}
+                  </span>
+                </div>
+                <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-indigo-600 h-3 rounded-full" style={{ width: `${((event.capacity - event.available_spots ) / event.capacity) * 100}%`  }}></div> 
+                </div>
+              </div>
+            )}
+          </div>
+
+          {event.status === "published" && event.capacity > 0 && event.available_spots > 0 && new Date(event.start_date) > new Date() && (
+            <button
+              onClick={openRegisterModal}
+              className="mt-4 w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium"
+            >
+              Register Now
+            </button>
           )}
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      <Modal isOpen={showRegisterModal} onClose={() => setShowRegisterModal(false)} className="max-w-md">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Register for Event</h2>
+          <p className="text-sm text-gray-600 mb-6">{event.title}</p>
+
+          <form onSubmit={handleRegister}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={registerName}
+                onChange={(e) => setRegisterName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enter your name"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                required
+                value={registerEmail}
+                onChange={(e) => setRegisterEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowRegisterModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                disabled={registering}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={registering}
+                className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {registering ? "Registering..." : "Confirm Registration"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+    </>
   )
 }
