@@ -41,7 +41,6 @@ export default function UserList() {
       setUsers(data);
       setTotal(total);
     } catch (error) {
-      console.log(error);
       toast.error("Error fetching users");
     }
   };

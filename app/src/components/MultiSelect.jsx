@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md"
 import { HiChevronDown, HiChevronUp } from "react-icons/hi2"
 import { HiMagnifyingGlass } from "react-icons/hi2"
-import { useTranslation } from "i18next"
+import { useTranslation } from "react-i18next"
 
 function MultiSelect({ id, options, values, onSelectedChange, placeholder = "Select an option" }) {
   const { t } = useTranslation("components")

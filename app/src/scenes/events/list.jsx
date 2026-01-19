@@ -1,29 +1,34 @@
 import React, { useEffect, useState } from "react"
 import { AiOutlineCalendar, AiOutlineFilter, AiOutlineDelete } from "react-icons/ai"
+import { Link } from "react-router-dom"
+import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter, AiOutlineDelete, AiOutlineInfoCircle } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 import EventCard from "@/scenes/events/components/EventCard"
+import Loader from "@/components/loader"
 
 export default function ListView() {
   const [allEvents, setAllEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
   const [total, setTotal] = useState(0)
+  const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({ search: "", category: "", city: "" })
-  const [sortBy, setSortBy] = useState("")
+  const [filters, setFilters] = useState({ 
+    search: "", 
+    category: "", 
+    city: "",
+    sort: "",
+    direction: ""
+  })
 
   useEffect(() => {
     fetchEvents()
   }, [])
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => { fetchEvents() }, 200) 
+    const timeoutId = setTimeout(() => { fetchEvents() }, 300) 
     return () => clearTimeout(timeoutId)
   }, [filters])
-
-  useEffect(() => {
-    applySort()
-  }, [allEvents, sortBy])
 
   const fetchEvents = async () => {
     try {
@@ -32,6 +37,8 @@ export default function ListView() {
         search: filters.search,
         category: filters.category,
         city: filters.city,
+        sort: filters.sort,
+        direction: filters.direction,
         per_page: 100,
         page: 1
       })
@@ -39,12 +46,17 @@ export default function ListView() {
       if (!ok) throw new Error("Failed to fetch events")
       setAllEvents(data || [])
       setTotal(total || 0)
+      setEvents(data || [])
     } catch (error) {
       toast.error("Could not load events")
     } finally {
       setLoading(false)
     }
   }
+
+  const handleSearch = e => {
+    e.preventDefault()
+    fetchEvents()
 
   const applySort = () => {
     let sorted = [...allEvents]
@@ -75,38 +87,56 @@ export default function ListView() {
     setFilteredEvents(sorted)
   }
 
-  const handleSearch = e => {
-    e.preventDefault()
-    fetchEvents()
+  const clearFilters = () => {
+    setFilters({ search: "", category: "", city: "", sort: "", direction: "" })
   }
 
-  const clearFilters = () => {
-    setFilters({ search: "", category: "", city: "" })
-    setSortBy("")
+  const handleSortChange = (e) => {
+    const value = e.target.value
+    if (!value) {
+      setFilters({ ...filters, sort: "", direction: "" })
+      return
+    }
+
+    const sortMap = {
+      "latest_date": { sort: "start_date", direction: "desc" },
+      "earliest_date": { sort: "start_date", direction: "asc" },
+      "lowest_price": { sort: "price", direction: "asc" },
+      "highest_price": { sort: "price", direction: "desc" },
+      "biggest_capacity": { sort: "capacity", direction: "desc" },
+      "smallest_capacity": { sort: "capacity", direction: "asc" }
+    }
+
+    const sortConfig = sortMap[value]
+    if (sortConfig) {
+      setFilters({ ...filters, sort: sortConfig.sort, direction: sortConfig.direction })
+    }
+  }
+
+  const getSortOptionValue = () => {
+    if (!filters.sort || !filters.direction) return ""
+    
+    if (filters.sort === "start_date" && filters.direction === "desc") return "latest_date"
+    if (filters.sort === "start_date" && filters.direction === "asc") return "earliest_date"
+    if (filters.sort === "price" && filters.direction === "asc") return "lowest_price"
+    if (filters.sort === "price" && filters.direction === "desc") return "highest_price"
+    if (filters.sort === "capacity" && filters.direction === "desc") return "biggest_capacity"
+    if (filters.sort === "capacity" && filters.direction === "asc") return "smallest_capacity"
+    return ""
   }
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-      </div>
+      <Loader />
     )
   }
 
   return (
     <div>
-      {/* Info card */}
       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-start">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <AiOutlineInfoCircle className="h-5 w-5 text-blue-400" />
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-blue-800">Public Event Search</h3>
@@ -150,6 +180,16 @@ export default function ListView() {
                 onChange={e => setFilters({ ...filters, city: e.target.value })}
               />
             </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+            <input
+              type="text"
+              placeholder="Event title, venue, or description..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={filters.search}
+              onChange={e => setFilters({ ...filters, search: e.target.value })}
+            />
           </div>
         </form>
 
@@ -251,6 +291,9 @@ export default function ListView() {
                 className="px-4 py-2 pl-10 pr-8 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer transition-colors"
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
+                className="px-4 py-2 pl-10 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+                value={getSortOptionValue()}
+                onChange={handleSortChange}
               >
                 <option value="">Sort by...</option>
                 <option value="latest_date">Latest Date</option>
@@ -275,9 +318,16 @@ export default function ListView() {
       </div>
       <div className="text-sm text-gray-500 mb-4">
         Upcoming events: {total}
+        Upcoming events: {events.length}
       </div>
 
       {/* Events List */}
+      {events.length === 0 ? (
+
+      <div className="text-sm text-gray-500 mb-4 pt-4">
+        Upcoming events: {filteredEvents.length} !!!!!
+      </div> 
+      
       {filteredEvents.length === 0 ? (
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
@@ -293,7 +343,7 @@ export default function ListView() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEvents.map(event => (
+          {events.map(event => (
             <EventCard key={event._id} event={event} />
           ))}
         </div>

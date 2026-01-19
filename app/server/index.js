@@ -1,10 +1,8 @@
-//server-prod.js
 import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
  
 const app = express();
-console.log("coucou")
  
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,5 +13,5 @@ app.route('*').all((req, res) => {
 });
 
 app.listen(8080, () => {
-  console.log('Listning at: 8080.');
+  console.log('Listening at: 8080.');
 });
