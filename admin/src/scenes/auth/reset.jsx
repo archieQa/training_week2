@@ -24,7 +24,7 @@ export default ({ location }) => {
       toast.success("Success!");
       navigate("/");
     } catch (e) {
-      console.log(e);
+      // Error handling
     } finally {
       setBtnLoading(false);
     }

@@ -28,7 +28,6 @@ export default () => {
       if (user) setUser(user);
       setBtnLoading(false);
     } catch (e) {
-      console.log("e", e);
       setBtnLoading(false);
     }
   };

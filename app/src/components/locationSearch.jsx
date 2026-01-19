@@ -10,9 +10,7 @@ const LocationSearch = ({ apiKey }) => {
 
   const onPlaceChanged = () => {
     if (autocomplete !== null) {
-      console.log(autocomplete.getPlace())
-    } else {
-      console.log("Autocomplete is not loaded yet!")
+      autocomplete.getPlace()
     }
   }
 

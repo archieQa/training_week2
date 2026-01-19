@@ -71,7 +71,6 @@ router.post("/signup", async (req, res) => {
 
     return res.status(200).send({ user, token, ok: true });
   } catch (error) {
-    console.log("e", error);
     if (error.code === 11000) return res.status(409).send({ ok: false, code: ERROR_CODES.USER_ALREADY_REGISTERED });
     capture(error);
     return res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
