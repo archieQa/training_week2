@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineCopy, AiOutlineEye, AiOutlineEdit, AiOutlineUsergroupAdd, AiOutlineDelete } from "react-icons/ai"
 import { HiDotsVertical } from "react-icons/hi"
 import { Menu } from "@headlessui/react"
+import { formatDateLocal, formatTimeLocal } from "@/utils"
 
 function EventAvailabilityBadge({ capacity, availableSpots }) {
   if (capacity <= 0) return null
@@ -21,7 +22,7 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
   const hasMenuActions = !!onView
 
   const defaultFormatDate = date => {
-    return new Date(date).toLocaleDateString("en-US", {
+    return formatDateLocal(date, {
       weekday: "short",
       year: "numeric",
       month: "short",
@@ -30,7 +31,7 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
   }
 
   const formatTime = date => {
-    return new Date(date).toLocaleTimeString("en-US", {
+    return formatTimeLocal(date, {
       hour: "2-digit",
       minute: "2-digit"
     })

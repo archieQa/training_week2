@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
+import { formatDateLocal, formatTimeLocal } from "@/utils"
 
 export default function ListView() {
   const [events, setEvents] = useState([])
@@ -155,7 +156,7 @@ export default function ListView() {
 
 function EventCard({ event }) {
   const formatDate = date => {
-    return new Date(date).toLocaleDateString("en-US", {
+    return formatDateLocal(date, {
       weekday: "short",
       year: "numeric",
       month: "short",
@@ -164,7 +165,7 @@ function EventCard({ event }) {
   }
 
   const formatTime = date => {
-    return new Date(date).toLocaleTimeString("en-US", {
+    return formatTimeLocal(date, {
       hour: "2-digit",
       minute: "2-digit"
     })
