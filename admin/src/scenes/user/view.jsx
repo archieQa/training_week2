@@ -27,7 +27,6 @@ export default function UserView() {
       if (!ok) return toast.error("Error fetching user");
       setUser(data);
     } catch (e) {
-      console.log(e);
       toast.error("Error fetching user");
     }
   };
@@ -74,7 +73,6 @@ function Information({ user, setUser }) {
       toast.success("Updated!");
       setUser(data);
     } catch (e) {
-      console.log(e);
       toast.error("Error updating user");
     } finally {
       setBtnLoading(false);
@@ -90,7 +88,6 @@ function Information({ user, setUser }) {
       toast.success("Deleted!");
       navigate("/user");
     } catch (e) {
-      console.log(e);
       toast.error("Error deleting user");
     }
   };

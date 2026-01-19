@@ -1,12 +1,14 @@
 import React from "react"
+import { formatDateTimeLocal } from "@/utils"
 
 export default function OverviewTab({ event }) {
   const formatDate = date => {
-    return new Date(date).toLocaleDateString("en-US", {
+    return formatDateTimeLocal(date, {
       weekday: "long",
       year: "numeric",
       month: "long",
-      day: "numeric",
+      day: "numeric"
+    }, {
       hour: "2-digit",
       minute: "2-digit"
     })

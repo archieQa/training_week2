@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
+import { formatDateLocal, formatTimeLocal } from "@/utils"
 
 export default function ListView() {
   const [events, setEvents] = useState([])
@@ -24,10 +25,15 @@ export default function ListView() {
         page: 1
       })
 
-      if (!ok) throw new Error("Failed to fetch events")
+      if (!ok) {
+        const errorMsg = message || data?.message || "Server returned an error while fetching events"
+        throw new Error(errorMsg)
+      }
       setEvents(data || [])
     } catch (error) {
-      toast.error("Could not load events")
+      const errorMessage = error.message || error.code || "Unable to load events. Please check your connection and try again."
+      toast.error(`Failed to load events: ${errorMessage}`)
+      console.error("Error fetching events:", error)
     } finally {
       setLoading(false)
     }
@@ -150,7 +156,7 @@ export default function ListView() {
 
 function EventCard({ event }) {
   const formatDate = date => {
-    return new Date(date).toLocaleDateString("en-US", {
+    return formatDateLocal(date, {
       weekday: "short",
       year: "numeric",
       month: "short",
@@ -159,7 +165,7 @@ function EventCard({ event }) {
   }
 
   const formatTime = date => {
-    return new Date(date).toLocaleTimeString("en-US", {
+    return formatTimeLocal(date, {
       hour: "2-digit",
       minute: "2-digit"
     })
@@ -217,7 +223,7 @@ function EventCard({ event }) {
                 </span>
               </div>
               <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${(event.available_spots / event.capacity) * 100}%` }}></div>
+                <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${event.capacity > 0 ? (event.available_spots / event.capacity) * 100 : 0}%` }}></div>
               </div>
             </div>
           )}

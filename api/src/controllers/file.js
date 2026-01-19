@@ -10,7 +10,6 @@ router.post("/", async (req, res) => {
 
   if (!files) return res.status(400).send({ ok: false, message: "No files uploaded" });
 
-  // Ensure 'files' is always an array
   const filesArray = Array.isArray(files) ? files : [files];
 
   const uploadPromises = filesArray
@@ -18,12 +17,13 @@ router.post("/", async (req, res) => {
       const base64ContentArray = file.rawBody.split(",");
       const contentType = base64ContentArray[0].match(/[^:\s*]\w+\/[\w-+\d.]+(?=[;| ])/)[0];
       const extension = file.name.split(".").pop();
+      // eslint-disable-next-line no-undef
       const buffer = Buffer.from(base64ContentArray[1], "base64");
       const uuid = crypto.randomBytes(16).toString("hex");
 
       return uploadToS3FromBuffer(`file${folder}/${uuid}/${file.name}.${extension}`, buffer, contentType);
     })
-    .filter((promise) => promise !== null); // Filter out the nulls
+    .filter((promise) => promise !== null); 
 
   try {
     const urls = await Promise.all(uploadPromises);

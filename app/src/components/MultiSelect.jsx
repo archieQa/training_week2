@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md"
 import { HiChevronDown, HiChevronUp } from "react-icons/hi2"
 import { HiMagnifyingGlass } from "react-icons/hi2"
-import { useTranslation } from "i18next"
+import { useTranslation } from "react-i18next"
 
 function MultiSelect({ id, options, values, onSelectedChange, placeholder = "Select an option" }) {
   const { t } = useTranslation("components")
@@ -81,12 +81,21 @@ function MultiSelect({ id, options, values, onSelectedChange, placeholder = "Sel
                 />
               </div>
             </li>
-            {options
-              .filter(o => {
+            {(() => {
+              const filteredOptions = options.filter(o => {
                 if (!search) return true
                 return o.label.toLowerCase().includes(search.toLowerCase())
               })
-              .map(option => {
+              
+              if (filteredOptions.length === 0 && search) {
+                return (
+                  <li className="px-4 py-3 text-sm text-gray-500 text-center">
+                    No results found
+                  </li>
+                )
+              }
+              
+              return filteredOptions.map(option => {
                 const isSelected = selectedOptions.find(_option => _option.value === option.value)
                 return (
                   <li key={option.value} onClick={() => handleOptionClick(option)} className="flex items-center gap-1 hover:bg-gray-100 text-sm px-2 py-1 cursor-pointer w-96">
@@ -94,7 +103,8 @@ function MultiSelect({ id, options, values, onSelectedChange, placeholder = "Sel
                     <span className={`flex-1 ${isSelected ? "font-semibold" : "font-normal"}`}>{option.label}</span>
                   </li>
                 )
-              })}
+              })
+            })()}
           </ul>
         </div>
       )}

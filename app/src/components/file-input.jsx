@@ -14,7 +14,6 @@ const FileInput = ({ value, onChange, name, folder }) => {
   if (!value) {
     preview = null
   } else if (value.indexOf(".pdf") !== -1) {
-    console.log("pdf")
     preview = (
       <div className="absolute top-0 left-0 w-20 h-20 bg-gray-300 opacity-80 hover:opacity-90 flex items-center justify-center cursor-pointer text-[12px] text-black font-normal">
         <AiFillFilePdf size={48} />
@@ -31,20 +30,31 @@ const FileInput = ({ value, onChange, name, folder }) => {
   const handleFileChange = async e => {
     setLoading(true)
 
-    const files = []
+    try {
+      const files = []
 
-    const f = e.target.files
+      const f = e.target.files
 
-    for (let i = 0; i < f.length; i++) {
-      const file = f[i]
-      const rawBody = await readFileAsync(file)
-      files.push({ rawBody, name: file.name })
+      for (let i = 0; i < f.length; i++) {
+        const file = f[i]
+        const rawBody = await readFileAsync(file)
+        files.push({ rawBody, name: file.name })
+      }
+
+      const { data, ok, message } = await api.post(`/file`, { files, folder })
+
+      if (!ok) {
+        console.error("File upload failed:", message)
+        setLoading(false)
+        return
+      }
+      const imageUrl = Array.isArray(data) && data.length > 0 ? data[0] : data
+      onChange({ target: { value: imageUrl, name } })
+    } catch (error) {
+      console.error("File upload error:", error)
+    } finally {
+      setLoading(false)
     }
-
-    const { data } = await api.post(`/file`, { files, folder })
-
-    onChange({ target: { value: data } })
-    setLoading(false)
   }
 
   return (

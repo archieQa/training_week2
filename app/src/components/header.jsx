@@ -5,6 +5,7 @@ import { RxAvatar } from "react-icons/rx"
 
 import api from "@/services/api"
 import useStore from "@/services/store"
+import toast from "react-hot-toast"
 
 const Header = ({}) => {
   const { user, setUser } = useStore()
@@ -15,7 +16,7 @@ const Header = ({}) => {
       if (!res.ok) throw new Error("Something went wrong")
       setUser(null)
     } catch (error) {
-      console.log(error)
+      toast.error(error.message)
     }
   }
 
