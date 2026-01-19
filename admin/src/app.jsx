@@ -79,7 +79,6 @@ const UserLayout = () => {
       api.setToken(token);
       setUser(user);
     } catch (e) {
-      console.log(e);
       setUser(null);
     } finally {
       setLoading(false);
@@ -92,9 +91,9 @@ const UserLayout = () => {
 
   return (
     <main className="flex flex-col min-h-dvh overflow-hidden bg-gray-50">
-      <Layout /> {/* Barre de navigation en haut */}
+      <Layout />
       <div className="flex flex-1 h-full">
-        <div className="w-48">{/* Espace pour la barre latérale */}</div>
+        <div className="w-48"></div>
         <section className="flex-1 p-4">
           <Outlet />
         </section>

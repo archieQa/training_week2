@@ -31,7 +31,6 @@ export default () => {
       toast.success("Account created successfully!");
       navigate("/");
     } catch (e) {
-      console.log("e", e);
       toast.error(e.code || "Error");
     } finally {
       setBtnLoading(false);

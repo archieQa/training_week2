@@ -1,18 +1,23 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineCopy } from "react-icons/ai"
+import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineCopy, AiOutlineEye, AiOutlineEdit, AiOutlineUsergroupAdd, AiOutlineDelete } from "react-icons/ai"
+import { HiDotsVertical } from "react-icons/hi"
 import { Menu } from "@headlessui/react"
 
-export default function EventCard({
-  event,
-  onView,
-  onEdit,
-  onViewAttendees,
-  onDuplicate,
-  onDelete,
-  formatDate,
-  getStatusBadge
-}) {
+function EventAvailabilityBadge({ capacity, availableSpots }) {
+  if (capacity <= 0) return null
+
+  if (availableSpots === 0) {
+    return (
+      <span className="inline-block px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded">Sold out</span>
+    )
+  }
+  return (
+    <span className="inline-block px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded">Available spots: {availableSpots}</span>
+  )
+}
+
+export default function EventCard({ event, onView, onEdit, onViewAttendees, onDuplicate, onDelete, formatDate, getStatusBadge }) {
   const hasMenuActions = !!onView
 
   const defaultFormatDate = date => {
@@ -70,9 +75,7 @@ export default function EventCard({
 
           <Menu as="div" className="relative ml-4">
             <Menu.Button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-              </svg>
+              <HiDotsVertical className="w-5 h-5 text-gray-600" />
             </Menu.Button>
 
             <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
@@ -85,25 +88,7 @@ export default function EventCard({
                         active ? "bg-gray-100" : ""
                       } flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                     >
-                      <svg
-                        className="w-4 h-4 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
+                      <AiOutlineEye className="w-4 h-4 mr-3" />
                       View Details
                     </button>
                   )}
@@ -117,19 +102,7 @@ export default function EventCard({
                         active ? "bg-gray-100" : ""
                       } flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                     >
-                      <svg
-                        className="w-4 h-4 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
+                      <AiOutlineEdit className="w-4 h-4 mr-3" />
                       Edit Event
                     </button>
                   )}
@@ -157,19 +130,7 @@ export default function EventCard({
                         active ? "bg-gray-100" : ""
                       } flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                     >
-                      <svg
-                        className="w-4 h-4 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
+                      <AiOutlineUsergroupAdd className="w-4 h-4 mr-3" />
                       View Attendees
                     </button>
                   )}
@@ -185,19 +146,7 @@ export default function EventCard({
                         active ? "bg-red-50" : ""
                       } flex items-center w-full px-4 py-2 text-sm text-red-600`}
                     >
-                      <svg
-                        className="w-4 h-4 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
+                      <AiOutlineDelete className="w-4 h-4 mr-3" />
                       Delete Event
                     </button>
                   )}
@@ -216,11 +165,7 @@ export default function EventCard({
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <span className="inline-block px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded">{event.category}</span>
-          {event.capacity > 0 && event.available_spots === 0 ? ( 
-            <span className="inline-block px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded">Sold out</span>
-          ) : event.capacity > 0 ? (
-            <span className="inline-block px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded">Available spots: {event.available_spots}</span>
-          ): null }
+          <EventAvailabilityBadge capacity={event.capacity} availableSpots={event.available_spots} />
           {event.price > 0 ? (
             <span className="text-sm font-bold text-gray-900">
               {event.price} {event.currency}
