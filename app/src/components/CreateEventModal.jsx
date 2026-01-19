@@ -35,7 +35,6 @@ export default function CreateEventModal({ isOpen, onClose, onSuccess }) {
       onSuccess()
     } catch (error) {
       toast.error(error.message || "Failed to create event")
-      console.error(error)
     } finally {
       setLoading(false)
     }

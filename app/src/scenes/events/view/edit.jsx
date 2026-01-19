@@ -67,11 +67,10 @@ export default function EditTab({ event, fetchEvent }) {
       if (!ok) throw new Error("Failed to update event")
 
       toast.success("Event updated successfully!")
-      await fetchEvent() // Refresh the parent event data
-      navigate(`/event/${id}`) // Navigate back to overview tab
+      await fetchEvent() 
+      navigate(`/event/${id}`) 
     } catch (error) {
       toast.error(error.message || "Failed to update event")
-      console.error(error)
     } finally {
       setSaving(false)
     }
@@ -90,11 +89,10 @@ export default function EditTab({ event, fetchEvent }) {
       if (!ok) throw new Error("Failed to publish event")
 
       toast.success("Event published successfully! 🎉")
-      await fetchEvent() // Refresh the parent event data
-      navigate(`/event/${id}`) // Navigate back to overview tab
+      await fetchEvent() 
+      navigate(`/event/${id}`) 
     } catch (error) {
       toast.error(error.message || "Failed to publish event")
-      console.error(error)
     } finally {
       setSaving(false)
     }
@@ -105,7 +103,6 @@ export default function EditTab({ event, fetchEvent }) {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        {/* Info card */}
         <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-start">
             <div className="flex-shrink-0">
@@ -134,7 +131,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Status badge */}
         {isDraft && (
           <div className="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400">
             <p className="text-sm text-yellow-800">
@@ -145,7 +141,6 @@ export default function EditTab({ event, fetchEvent }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Information */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
 
@@ -196,7 +191,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Date & Time */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Date & Time</h2>
 
@@ -228,7 +222,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Location */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Location</h2>
 
@@ -284,7 +277,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Capacity & Pricing */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Capacity & Pricing</h2>
 
@@ -334,7 +326,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-between items-center pt-4">
           <button
             type="button"
