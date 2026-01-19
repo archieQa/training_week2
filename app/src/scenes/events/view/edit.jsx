@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { AiOutlineInfoCircle } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 
@@ -67,11 +68,17 @@ export default function EditTab({ event, fetchEvent }) {
       if (!ok) {
         const errorMsg = message || "Server returned an error while updating the event"
         throw new Error(errorMsg)
+      const { ok, code } = await api.put(`/event/${id}`, formData)
+      if (!ok) {
+        if (code === "END_DATE_MUST_BE_AFTER_START_DATE") {
+          throw new Error("End date must be after start date")
+        }
+        throw new Error("Failed to update event")
       }
 
       toast.success("Event updated successfully!")
-      await fetchEvent() // Refresh the parent event data
-      navigate(`/event/${id}`) // Navigate back to overview tab
+      await fetchEvent() 
+      navigate(`/event/${id}`) 
     } catch (error) {
       const errorMessage = error.message || error.code || "Unable to update event. Please check your connection and try again."
       toast.error(`Failed to update event: ${errorMessage}`)
@@ -94,11 +101,17 @@ export default function EditTab({ event, fetchEvent }) {
       if (!ok) {
         const errorMsg = message || "Server returned an error while publishing the event"
         throw new Error(errorMsg)
+      const { ok, code } = await api.put(`/event/${id}`, { ...formData, status: "published" })
+      if (!ok) {
+        if (code === "END_DATE_MUST_BE_AFTER_START_DATE") {
+          throw new Error("End date must be after start date")
+        }
+        throw new Error("Failed to publish event")
       }
 
       toast.success("Event published successfully! 🎉")
-      await fetchEvent() // Refresh the parent event data
-      navigate(`/event/${id}`) // Navigate back to overview tab
+      await fetchEvent() 
+      navigate(`/event/${id}`) 
     } catch (error) {
       const errorMessage = error.message || error.code || "Unable to publish event. Please check your connection and try again."
       toast.error(`Failed to publish event: ${errorMessage}`)
@@ -113,17 +126,10 @@ export default function EditTab({ event, fetchEvent }) {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        {/* Info card */}
         <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-start">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <AiOutlineInfoCircle className="h-5 w-5 text-green-400" />
             </div>
             <div className="ml-3">
               <h3 className="text-sm font-medium text-green-800">Two-Step Creation Pattern</h3>
@@ -142,7 +148,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Status badge */}
         {isDraft && (
           <div className="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400">
             <p className="text-sm text-yellow-800">
@@ -153,7 +158,6 @@ export default function EditTab({ event, fetchEvent }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Information */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
 
@@ -204,7 +208,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Date & Time */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Date & Time</h2>
 
@@ -219,6 +222,7 @@ export default function EditTab({ event, fetchEvent }) {
                 required
                 value={formData.start_date}
                 onChange={handleChange}
+                min={new Date().toISOString().slice(0, 16)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -230,13 +234,13 @@ export default function EditTab({ event, fetchEvent }) {
                 name="end_date"
                 value={formData.end_date}
                 onChange={handleChange}
+                min={formData.start_date || new Date().toISOString().slice(0, 16)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
         </div>
 
-        {/* Location */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Location</h2>
 
@@ -292,7 +296,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Capacity & Pricing */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Capacity & Pricing</h2>
 
@@ -342,7 +345,6 @@ export default function EditTab({ event, fetchEvent }) {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-between items-center pt-4">
           <button
             type="button"
