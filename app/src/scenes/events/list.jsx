@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { AiOutlineCalendar, AiOutlineFilter, AiOutlineDelete } from "react-icons/ai"
 import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter, AiOutlineDelete, AiOutlineInfoCircle } from "react-icons/ai"
 import api from "@/services/api"
@@ -7,6 +8,9 @@ import EventCard from "@/scenes/events/components/EventCard"
 import Loader from "@/components/loader"
 
 export default function ListView() {
+  const [allEvents, setAllEvents] = useState([])
+  const [filteredEvents, setFilteredEvents] = useState([])
+  const [total, setTotal] = useState(0)
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({ 
@@ -29,7 +33,7 @@ export default function ListView() {
   const fetchEvents = async () => {
     try {
       setLoading(true)
-      const { ok, data } = await api.post("/event/search", {
+      const { ok, data, total } = await api.post("/event/search", {
         search: filters.search,
         category: filters.category,
         city: filters.city,
@@ -40,6 +44,8 @@ export default function ListView() {
       })
 
       if (!ok) throw new Error("Failed to fetch events")
+      setAllEvents(data || [])
+      setTotal(total || 0)
       setEvents(data || [])
     } catch (error) {
       toast.error("Could not load events")
@@ -75,7 +81,6 @@ export default function ListView() {
         sorted.sort((a, b) => a.capacity - b.capacity)
         break
       default:
-
         break
     }
 
@@ -150,6 +155,31 @@ export default function ListView() {
         </div>
       </div>
 
+      {/* Search and Filters */}
+      <div className="mb-6 bg-white p-6 rounded-lg shadow">
+        {/* Search Inputs */}
+        <form onSubmit={handleSearch} className="mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+              <input
+                type="text"
+                placeholder="Event title, venue, or description..."
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                value={filters.search}
+                onChange={e => setFilters({ ...filters, search: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+              <input
+                type="text"
+                placeholder="Paris, Lyon..."
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                value={filters.city}
+                onChange={e => setFilters({ ...filters, city: e.target.value })}
+              />
+            </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
@@ -161,29 +191,111 @@ export default function ListView() {
               onChange={e => setFilters({ ...filters, search: e.target.value })}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-            <input
-              type="text"
-              placeholder="Paris, Lyon..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={filters.city}
-              onChange={e => setFilters({ ...filters, city: e.target.value })}
-            />
+        </form>
+
+        {/* Actions: Search Button, Category Chips, Sort, Clear */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <button 
+              type="button"
+              onClick={handleSearch}
+              className="px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            >
+              Search Events
+            </button>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              <button 
+                type="button"
+                onClick={() => setFilters({ ...filters, category: "" })} 
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.category === "" 
+                    ? "bg-indigo-600 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                All
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilters({ ...filters, category: "conference" })}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.category === "conference" 
+                    ? "bg-indigo-600 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Conference
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilters({ ...filters, category: "workshop" })}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.category === "workshop" 
+                    ? "bg-indigo-600 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Workshop
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilters({ ...filters, category: "seminar" })}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.category === "seminar" 
+                    ? "bg-indigo-600 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Seminar
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilters({ ...filters, category: "networking" })}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.category === "networking" 
+                    ? "bg-indigo-600 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Networking
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilters({ ...filters, category: "social" })}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.category === "social" 
+                    ? "bg-indigo-600 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Social
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilters({ ...filters, category: "other" })}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.category === "other" 
+                    ? "bg-indigo-600 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Other
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center justify-between gap-4 mt-4">
-          <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            Search Events
-          </button>
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-3">
             <div className="relative">
               <select
+                className="px-4 py-2 pl-10 pr-8 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer transition-colors"
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
                 className="px-4 py-2 pl-10 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
                 value={getSortOptionValue()}
                 onChange={handleSortChange}
               >
-                <option value="">No filters</option>
+                <option value="">Sort by...</option>
                 <option value="latest_date">Latest Date</option>
                 <option value="earliest_date">Earliest Date</option>
                 <option value="lowest_price">Lowest Price</option>
@@ -196,15 +308,16 @@ export default function ListView() {
             <button
               type="button"
               onClick={clearFilters}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              title="Remove all filters"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              title="Clear all filters"
             >
               <AiOutlineDelete className="w-4 h-4" />
             </button>
           </div>
         </div>
-      </form>
+      </div>
       <div className="text-sm text-gray-500 mb-4">
+        Upcoming events: {total}
         Upcoming events: {events.length}
       </div>
 
