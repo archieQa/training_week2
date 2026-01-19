@@ -52,7 +52,7 @@ export default function EventView() {
     <div className="p-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 break-words">{event.title}</h1>
       </div>
 
       {/* Tabs */}
