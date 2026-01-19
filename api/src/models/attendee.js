@@ -7,6 +7,13 @@ const Schema = new mongoose.Schema(
     event_id: { type: mongoose.Schema.Types.ObjectId, ref: "event", required: true },
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
     
+
+    event_title: { type: String },
+    event_start_date: { type: Date },
+    event_venue: { type: String },
+    event_city: { type: String },
+    event_status: { type: String },
+    
     // Attendee info (cached from user)
     name: { type: String, required: true },
     email: { type: String, required: true },
