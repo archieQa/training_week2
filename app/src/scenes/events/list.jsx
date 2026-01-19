@@ -54,6 +54,7 @@ export default function ListView() {
   const fetchEvents = async () => {
     try {
       setLoading(true)
+      const { ok, data, message } = await api.post("/event/search", {
       const { ok, data, total } = await api.post("/event/search", {
         search: filters.search,
         category: filters.category,
@@ -64,12 +65,17 @@ export default function ListView() {
         page: 1
       })
 
-      if (!ok) throw new Error("Failed to fetch events")
+      if (!ok) {
+        const errorMsg = message || data?.message || "Failed to fetch events from server"
+        throw new Error(errorMsg)
+      }
       setAllEvents(data || [])
       setTotal(total || 0)
       setEvents(data || [])
     } catch (error) {
-      toast.error("Could not load events")
+      const errorMessage = error.message || error.code || "Unable to load events. Please check your connection and try again."
+      toast.error(`Failed to load events: ${errorMessage}`)
+      console.error("Error fetching events:", error)
     } finally {
       setLoading(false)
       setSearchLoading(false)
