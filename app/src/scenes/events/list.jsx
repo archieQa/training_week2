@@ -74,7 +74,7 @@ export default function ListView() {
 
     setFilteredEvents(sorted)
   }
-
+ 
   const handleSearch = e => {
     e.preventDefault()
     fetchEvents()

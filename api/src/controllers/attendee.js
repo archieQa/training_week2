@@ -7,13 +7,14 @@ const AttendeeObject = require("../models/attendee");
 const EventObject = require("../models/event");
 const ERROR_CODES = require("../utils/errorCodes");
 const { capture } = require("../services/sentry");
+const { sendEmail } = require("../services/brevo");
 
 // ============ USER ROUTES (Authenticated) ============
 
 // Register for an event
 router.post("/register", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
-    const { event_id, notes } = req.body;
+    const { event_id, notes, name, email } = req.body;
 
     if (!event_id) {
       return res.status(400).send({ ok: false, code: "EVENT_ID_REQUIRED" });
@@ -50,15 +51,20 @@ router.post("/register", passport.authenticate("user", { session: false }), asyn
       return res.status(400).send({ ok: false, code: "ALREADY_REGISTERED" });
     }
 
-    // Generate ticket number
-    const ticket_number = `TKT-${event_id.toString().slice(-6).toUpperCase()}-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
+    const attendeeName = name || req.user.name;
+    const attendeeEmail = email || req.user.email;
 
     // Create attendee
+    if (!attendeeName || !attendeeEmail) {
+      return res.status(400).send({ ok: false, code: "NAME_AND_EMAIL_REQUIRED" });
+    }
+
+    const ticket_number = `TKT-${event_id.toString().slice(-6).toUpperCase()}-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
     const attendee = await AttendeeObject.create({
       event_id,
       user_id: req.user._id,
-      name: req.user.name,
-      email: req.user.email,
+      name: attendeeName,
+      email: attendeeEmail,
       ticket_number,
       status: event.requires_approval ? "pending" : "confirmed",
       payment_status: event.price > 0 ? "pending" : "free",
@@ -72,6 +78,31 @@ router.post("/register", passport.authenticate("user", { session: false }), asyn
       await event.save();
     }
 
+    try {
+      const eventDate = new Date(event.start_date).toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const location = [event.venue, event.city, event.country].filter(Boolean).join(", ") || "TBA";
+
+      await sendEmail(
+        [{ email: attendeeEmail, name: attendeeName }],
+        `Registration Confirmed: ${event.title}`,
+        `<h1>You're registered!</h1>
+         <p>Hi ${attendeeName},</p>
+         <p>Your registration for <strong>${event.title}</strong> has been confirmed.</p>
+         <p><strong>Date:</strong> ${eventDate}</p>
+         <p><strong>Location:</strong> ${location}</p>
+         <p><strong>Ticket Number:</strong> ${ticket_number}</p>
+         ${event.requires_approval ? "<p><em>Note: Your registration is pending approval.</em></p>" : ""}`
+      );
+    } catch (emailError) {
+      console.error("Failed to send registration email:", emailError);
+    }
     return res.status(201).send({ ok: true, data: attendee });
   } catch (error) {
     if (error.code === 11000) {
