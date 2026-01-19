@@ -170,7 +170,6 @@ router.post("/my-events/search", passport.authenticate(["user", "admin"], { sess
   }
 });
 
-
 router.put("/:id", passport.authenticate(["user", "admin"], { session: false }), async (req, res) => {
   try {
     const event = await EventObject.findById(req.params.id);
