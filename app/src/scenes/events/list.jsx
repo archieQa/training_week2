@@ -5,6 +5,7 @@ import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineFilter
 import api from "@/services/api"
 import toast from "react-hot-toast"
 import EventCard from "@/scenes/events/components/EventCard"
+import LoadingButton from "@/components/loadingButton"
 import Loader from "@/components/loader"
 
 export default function ListView() {
@@ -13,6 +14,10 @@ export default function ListView() {
   const [total, setTotal] = useState(0)
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [clearFiltersLoading, setClearFiltersLoading] = useState(false)
+  const [filters, setFilters] = useState({ search: "", category: "", city: "" })
+  const [sortBy, setSortBy] = useState("")
   const [filters, setFilters] = useState({ 
     search: "", 
     category: "", 
@@ -22,10 +27,26 @@ export default function ListView() {
   })
 
   useEffect(() => {
-    fetchEvents()
+    fetchEvents(true)
   }, [])
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => { fetchEvents(false) }, 200) 
+    return () => clearTimeout(timeoutId)
+  }, [filters])
+
+  useEffect(() => {
+    applySort()
+  }, [allEvents, sortBy])
+
+  const fetchEvents = async (isInitialLoad = false) => {
+    try {
+      if (isInitialLoad) {
+        setLoading(true)
+      } else {
+        setSearchLoading(true)
+      }
+      const { ok, data } = await api.post("/event/search", {
     const timeoutId = setTimeout(() => { fetchEvents() }, 300) 
     return () => clearTimeout(timeoutId)
   }, [filters])
@@ -51,6 +72,7 @@ export default function ListView() {
       toast.error("Could not load events")
     } finally {
       setLoading(false)
+      setSearchLoading(false)
     }
   }
 
@@ -87,6 +109,17 @@ export default function ListView() {
     setFilteredEvents(sorted)
   }
 
+  const handleSearch = e => {
+    e.preventDefault()
+    fetchEvents(false)
+  }
+
+  const clearFilters = async () => {
+    setClearFiltersLoading(true)
+    setFilters({ search: "", category: "", city: "" })
+    setSortBy("")
+    await new Promise(resolve => setTimeout(resolve, 100))
+    setClearFiltersLoading(false)
   const clearFilters = () => {
     setFilters({ search: "", category: "", city: "", sort: "", direction: "" })
   }
@@ -284,6 +317,16 @@ export default function ListView() {
               </button>
             </div>
           </div>
+        </div>
+        <div className="flex items-center justify-between gap-4 mt-4">
+          <LoadingButton 
+            type="submit" 
+            loading={searchLoading}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Search Events
+          </LoadingButton>
+          <div className="flex items-center gap-2">
 
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -305,14 +348,17 @@ export default function ListView() {
               </select>
               <AiOutlineFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
             </div>
-            <button
+            <LoadingButton
               type="button"
               onClick={clearFilters}
+              loading={clearFiltersLoading}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              title="Remove all filters"
               className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
               title="Clear all filters"
             >
               <AiOutlineDelete className="w-4 h-4" />
-            </button>
+            </LoadingButton>
           </div>
         </div>
       </div>
