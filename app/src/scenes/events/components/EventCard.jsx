@@ -1,25 +1,13 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineCopy, AiOutlineEye, AiOutlineEdit, AiOutlineUsergroupAdd, AiOutlineDelete } from "react-icons/ai"
+import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser, AiOutlineCopy, AiOutlineEye, AiOutlineEdit, AiOutlineUsergroupAdd, AiOutlineDelete, AiOutlineShareAlt, AiOutlineLink } from "react-icons/ai"
+import { IoLogoWhatsapp } from "react-icons/io5"
 import { HiDotsVertical } from "react-icons/hi"
 import { Menu } from "@headlessui/react"
 import Modal from "@/components/modal"
 import api from "@/services/api"
 import toast from "react-hot-toast"
 import useStore from "@/services/store"
-
-function EventAvailabilityBadge({ capacity, availableSpots }) {
-  if (capacity <= 0) return null
-
-  if (availableSpots === 0) {
-    return (
-      <span className="inline-block px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded">Sold out</span>
-    )
-  }
-  return (
-    <span className="inline-block px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded">Available spots: {availableSpots}</span>
-  )
-}
 
 export default function EventCard({ event, onView, onEdit, onViewAttendees, onDuplicate, onDelete, formatDate, getStatusBadge }) {
   const hasMenuActions = !!onView
@@ -28,6 +16,8 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
   const [registerName, setRegisterName] = useState(user?.name || "")
   const [registerEmail, setRegisterEmail] = useState(user?.email || "")
   const [registering, setRegistering] = useState(false)
+
+  const eventUrl = `${window.location.origin}/event/${event._id}`
 
   const defaultFormatDate = date => {
     if (!date) return ""
@@ -99,6 +89,32 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
     setRegisterName(user.name || "")
     setRegisterEmail(user.email || "")
     setShowRegisterModal(true)
+  }
+
+  const handleWhatsAppShare = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const text = `Check out this event: ${event.title} - ${eventUrl}`
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`
+    window.open(whatsappUrl, "_blank")
+  }
+
+  const handleCopyLink = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!navigator.clipboard) {
+      toast.error("Clipboard not available")
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(eventUrl)
+      toast.success("Event link copied to clipboard")
+    } catch (error) {
+      toast.error("Failed to copy link")
+    }
   }
 
   if (hasMenuActions) {
@@ -225,10 +241,10 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
   }
 
   return (
-    <>
-      <Link to={`/event/${event._id}`} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200 overflow-hidden block">
+    <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200 flex flex-col overflow-visible">
+      <Link to={`/event/${event._id}`} className="flex-1 overflow-hidden rounded-t-lg">
         {event.image_url && <img src={event.image_url} alt={event.title} className="w-full h-48 object-cover" />}
-        <div className="p-4">
+        <div className="p-4 pb-0">
           <div className="flex items-start justify-between mb-2">
             <span className="inline-block px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded">{event.category}</span>
             {event.capacity > 0 && event.available_spots === 0 ? ( 
@@ -287,17 +303,58 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
               </div>
             )}
           </div>
+        </div>
+      </Link>
 
-          {event.status === "published" && event.capacity > 0 && event.available_spots > 0 && new Date(event.start_date) > new Date() && (
+      <div className="p-4 pt-3">
+        {event.status === "published" && event.capacity > 0 && event.available_spots > 0 && new Date(event.start_date) > new Date() && (
+          <div className="flex items-center gap-2">
             <button
               onClick={openRegisterModal}
-              className="mt-4 w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium text-sm"
             >
               Register Now
             </button>
-          )}
-        </div>
-      </Link>
+            <Menu
+              as="div"
+              className="relative"
+            >
+              <Menu.Button className="inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50 transition-colors h-full">
+                <AiOutlineShareAlt className="w-4 h-4 mr-1" />
+                <span>Share</span>
+              </Menu.Button>
+              <Menu.Items className="absolute right-0 bottom-full mb-2 w-40 origin-bottom-right bg-white rounded-md shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none z-[100]">
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        onClick={handleWhatsAppShare}
+                        className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-3 py-2 text-sm text-gray-700`}
+                      >
+                        <IoLogoWhatsapp className="w-4 h-4 mr-2 text-green-500" />
+                        WhatsApp
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        onClick={handleCopyLink}
+                        className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-3 py-2 text-sm text-gray-700`}
+                      >
+                        <AiOutlineLink className="w-4 h-4 mr-2" />
+                        Copy link
+                      </button>
+                    )}
+                  </Menu.Item>  
+                </div>
+              </Menu.Items>
+            </Menu>
+          </div>
+        )}
+      </div>
 
       <Modal isOpen={showRegisterModal} onClose={() => setShowRegisterModal(false)} className="max-w-md">
         <div className="p-6">
@@ -353,6 +410,6 @@ export default function EventCard({ event, onView, onEdit, onViewAttendees, onDu
           </form>
         </div>
       </Modal>
-    </>
+    </div>
   )
 }
